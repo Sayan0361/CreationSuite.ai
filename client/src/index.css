@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap');
+@import "tailwindcss";
+
+*{
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+
+@theme{
+  --color-primary: #5044E5;
+}
+
+.reset-tw, .reset-tw *{
+  all: revert !important;
+}
+
+.cl-drawerRoot{
+  z-index: 10;
+}
