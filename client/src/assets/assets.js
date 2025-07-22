@@ -9,7 +9,8 @@ import { SquarePen, Hash, Image, Eraser, Scissors, FileText } from 'lucide-react
 import ai_gen_img_1 from "./ai_gen_img_1.png";
 import ai_gen_img_2 from "./ai_gen_img_2.png";
 import ai_gen_img_3 from "./ai_gen_img_3.png";
-
+import { FaLinkedin, FaGithub, FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa'
+import React from "react";
 export const assets = {
     logo,
     gradientBackground,
@@ -171,3 +172,30 @@ export const dummyPublishedCreationData = [
         "__v": 1
     },
 ]
+export const socialImgs = [
+  {
+    name: "linkedin",
+    Icon: FaLinkedin, 
+    url: "https://in.linkedin.com/in/sayan-sen-38b198255"
+  },
+  {
+    name: "github",
+    Icon: FaGithub,
+    url: "https://github.com/Sayan0361"
+  },
+  {
+    name: "twitter",
+    Icon: FaTwitter,
+    url: "https://x.com/Sayan_Sen007"
+  },
+  {
+    name: "facebook",
+    Icon: FaFacebook,
+    url: "https://www.facebook.com/profile.php?id=100040647903469"
+  },
+  {
+    name: "instagram",
+    Icon: FaInstagram,
+    url: "https://www.instagram.com/sayan_sen007/"
+  },
+];
