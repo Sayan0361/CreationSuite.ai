@@ -22,36 +22,36 @@ export const assets = {
 
 export const AiToolsData = [
     {
-        title: 'AI Article Writer',
-        description: 'Generate high-quality, engaging articles on any topic with our AI writing technology.',
+        title: 'AI Content Generator',
+        description: 'Produce well-researched, compelling articles on any subject with our advanced AI writer.',
         Icon: SquarePen,
         bg: { from: '#3588F2', to: '#0BB0D7' },
         path: '/ai/write-article'
     },
     {
-        title: 'Blog Title Generator',
-        description: 'Find the perfect, catchy title for your blog posts with our AI-powered generator.',
+        title: 'Blog Title Suggester',
+        description: 'Discover captivating, click-worthy titles for your blog content using AI.',
         Icon: Hash,
         bg: { from: '#B153EA', to: '#E549A3' },
         path: '/ai/blog-titles'
     },
     {
-        title: 'AI Image Generation',
-        description: 'Create stunning visuals with our AI image generation tool, Experience the power of AI ',
+        title: 'AI Art Generator',
+        description: 'Transform your ideas into breathtaking visuals with our AI-powered art generator. ',
         Icon: Image,
         bg: { from: '#20C363', to: '#11B97E' },
         path: '/ai/generate-images'
     },
     {
-        title: 'Background Removal',
-        description: 'Effortlessly remove backgrounds from your images with our AI-driven tool.',
+        title: 'AI Background Eraser',
+        description: 'Get clean, background-free images in seconds with our AI-powered remover.',
         Icon: Eraser,
         bg: { from: '#F76C1C', to: '#F04A3C' },
         path: '/ai/remove-background'
     },
     {
-        title: 'Object Removal',
-        description: 'Remove unwanted objects from your images seamlessly with our AI object removal tool.',
+        title: 'AI Object Eraser',
+        description: 'Eliminate distracting elements from your images with AI-powered precision.',
         Icon: Scissors,
         bg: { from: '#5C6AF1', to: '#427DF5' },
         path: '/ai/remove-object'
@@ -67,24 +67,24 @@ export const AiToolsData = [
 
 export const dummyTestimonialData = [
     {
-        image: assets.profile_img_1,
-        name: 'John Doe',
+        image: 'https://celebmafia.com/wp-content/uploads/2024/05/emma-watson-05-29-2024-1.jpg',
+        name: 'Emma Watson',
         title: 'Marketing Director, TechCorp',
-        content: 'ContentAI has revolutionized our content workflow. The quality of the articles is outstanding, and it saves us hours of work every week.',
+        content: "As someone who's passionate about both technology and communication, ContentAI strikes the perfect balance. It helps us craft messages that resonate while maintaining our brand's authentic voice - saving us 15+ hours weekly on content production.",
         rating: 4,
     },
     {
-        image: assets.profile_img_1,
-        name: 'Jane Smith',
+        image: 'https://cdn.gulte.com/wp-content/uploads/2025/06/1000203730-819x1024.jpg',
+        name: 'Wamiqa Gabbi',
         title: 'Content Creator, TechCorp',
-        content: 'ContentAI has made our content creation process effortless. The AI tools have helped us produce high-quality content faster than ever before.',
+        content: "I was skeptical about AI content at first, but ContentAI surprised me. It understands nuance and helps me create engaging social media posts in minutes. The image generator is my favorite - it brings my creative visions to life instantly!",
         rating: 5,
     },
     {
-        image: assets.profile_img_1,
-        name: 'David Lee',
+        image: 'https://i.ebayimg.com/images/g/uzIAAOSwEtdjY8r3/s-l1200.jpg',
+        name: 'Talia Ryder',
         title: 'Content Writer, TechCorp',
-        content: 'ContentAI has transformed our content creation process. The AI tools have helped us produce high-quality content faster than ever before.',
+        content: "ContentAI doesn't replace writers - it empowers them. I use it to overcome writer's block and generate fresh perspectives. The SEO optimization features have helped our articles rank higher without sacrificing quality.",
         rating: 4,
     },
 ]
