@@ -17,7 +17,7 @@ const Navbar = () => {
         <UserButton/> :
         (
           <button onClick={openSignIn} className="flex items-center gap-2 rounded-full text-sm cursor-pointer 
-            bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 
+            bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 
             text-white px-10 py-2.5 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 
             transition duration-300 ease-in-out shadow-lg">
             Get Started <ArrowRight className="w-4 h-4" />

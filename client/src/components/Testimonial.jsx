@@ -7,7 +7,14 @@ const Testimonial = () => {
     const subtitleRef = useRef(null)
     const testimonialCardsRef = useRef([])
     const backgroundRef = useRef(null)
-    
+
+    const handleInstagramRedirect = (link) => {
+        if (link) {
+            // Open Instagram link in a new tab
+            window.open(link, '_blank', 'noopener,noreferrer');
+        }
+    }
+
     useEffect(() => {
         // Import GSAP from CDN
         const script = document.createElement('script')
@@ -289,9 +296,10 @@ const Testimonial = () => {
                                     src={testimonial.image} 
                                     className='testimonial-avatar w-12 object-contain rounded-full transition-all duration-300' 
                                     alt={testimonial.name} 
+                                    onClick={() => handleInstagramRedirect(testimonial.link)}
                                 />
                                 <div className='text-sm text-gray-600'>
-                                    <h3 className='font-medium group-hover:text-blue-600 transition-colors duration-300'>
+                                    <h3 onClick={() => handleInstagramRedirect(testimonial.link)} className='font-medium group-hover:text-blue-600 transition-colors duration-300'>
                                         {testimonial.name}
                                     </h3>
                                     <p className='text-xs text-gray-500 group-hover:text-gray-700 transition-colors duration-300'>

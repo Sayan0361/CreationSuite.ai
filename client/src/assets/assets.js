@@ -70,9 +70,10 @@ export const dummyTestimonialData = [
     {
         image: 'https://celebmafia.com/wp-content/uploads/2024/05/emma-watson-05-29-2024-1.jpg',
         name: 'Emma Watson',
-        title: 'Marketing Director, TechCorp',
+        title: 'Marketing Director, Hogwarts',
         content: "As someone who's passionate about both technology and communication, ContentAI strikes the perfect balance. It helps us craft messages that resonate while maintaining our brand's authentic voice - saving us 15+ hours weekly on content production.",
         rating: 4,
+        link: 'https://www.instagram.com/emmawatson/?hl=en',
     },
     {
         image: 'https://cdn.gulte.com/wp-content/uploads/2025/06/1000203730-819x1024.jpg',
@@ -80,6 +81,7 @@ export const dummyTestimonialData = [
         title: 'Content Creator, TechCorp',
         content: "I was skeptical about AI content at first, but ContentAI surprised me. It understands nuance and helps me create engaging social media posts in minutes. The image generator is my favorite - it brings my creative visions to life instantly!",
         rating: 5,
+        link: 'https://www.instagram.com/wamiqagabbi/?hl=en',
     },
     {
         image: 'https://i.ebayimg.com/images/g/uzIAAOSwEtdjY8r3/s-l1200.jpg',
@@ -87,6 +89,7 @@ export const dummyTestimonialData = [
         title: 'Content Writer, TechCorp',
         content: "ContentAI doesn't replace writers - it empowers them. I use it to overcome writer's block and generate fresh perspectives. The SEO optimization features have helped our articles rank higher without sacrificing quality.",
         rating: 4,
+        link: 'https://www.instagram.com/taliaryder/?hl=en',
     },
 ]
 
