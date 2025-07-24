@@ -18,6 +18,9 @@ const Dashboard = () => {
 
   return (
     <div className='h-full overflow-y-scroll p-6'>
+      <h1 className='text-2xl text-white mb-2'>
+        Dashboard
+      </h1>
       <div className='flex justify-start gap-4 flex-wrap'>
         {/* Total Creation Card */}
         <div className='flex justify-between items-center w-72 p-4 px-6 bg-zinc-900 rounded-xl'>
