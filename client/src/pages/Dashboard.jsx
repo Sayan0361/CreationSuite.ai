@@ -20,8 +20,8 @@ const Dashboard = () => {
     <div className='h-full overflow-y-scroll p-6'>
       <div className='flex justify-start gap-4 flex-wrap'>
         {/* Total Creation Card */}
-        <div className='flex justify-between items-center w-72 p-4 px-6 bg-white rounded-xl border border-gray-200'>
-          <div className='text-slate-600'>
+        <div className='flex justify-between items-center w-72 p-4 px-6 bg-zinc-900 rounded-xl'>
+          <div className='text-white'>
             <p className='text-sm'>
               Total Creations
             </p>
@@ -35,8 +35,8 @@ const Dashboard = () => {
         </div>
 
         {/* Active Plan Card  */}
-        <div className='flex justify-between items-center w-72 p-4 px-6 bg-white rounded-xl border border-gray-200'>
-            <div className='text-slate-600'>
+        <div className='flex justify-between items-center w-72 p-4 px-6 bg-zinc-900 rounded-xl'>
+            <div className='text-white'>
               <p className='text-sm'>Active Plan</p>
               <h2 className='text-xl font-semibold'>
                 <Protect plan='premium' fallback="Free">Premium</Protect>
@@ -49,7 +49,7 @@ const Dashboard = () => {
       </div>
 
       <div className='space-y-3'>
-          <p className='mt-6 mb-4'>Recent Creations</p>
+          <p className='mt-6 mb-4 text-white'>Recent Creations</p>
           {
             creations.map((item)=> <CreationItem key={item.id} item={item}/>)
           }

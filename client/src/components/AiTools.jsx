@@ -121,7 +121,7 @@ const AiTools = () => {
               
               // Enhanced shadow
               gsap.to(card, {
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
                 duration: 0.4,
                 ease: "power2.out"
               })
@@ -158,7 +158,7 @@ const AiTools = () => {
               }
               
               gsap.to(card, {
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
                 duration: 0.4,
                 ease: "power2.out"
               })
@@ -245,19 +245,19 @@ const AiTools = () => {
   }, [])
 
   return (
-    <div ref={containerRef} className='px-4 sm:px-20 xl:px-32 my-24 relative overflow-hidden'>
+    <div ref={containerRef} className='px-4 sm:px-20 xl:px-32 relative overflow-hidden bg-zinc-950'>
       {/* Background decorative elements */}
-      <div ref={backgroundRef} className='absolute inset-0 pointer-events-none overflow-hidden'>
-        <div className='absolute top-10 left-10 w-32 h-32 rounded-full bg-blue-400/5 blur-3xl animate-pulse'></div>
-        <div className='absolute top-20 right-20 w-40 h-40 rounded-full bg-purple-400/5 blur-3xl animate-pulse delay-1000'></div>
-        <div className='absolute bottom-20 left-1/3 w-28 h-28 rounded-full bg-pink-400/5 blur-2xl animate-pulse delay-2000'></div>
+      <div ref={backgroundRef} className='absolute inset-0 pointer-events-none overflow-hidden mt-10'>
+        <div className='absolute top-10 left-10 w-32 h-32 rounded-full bg-blue-400/10 blur-3xl animate-pulse'></div>
+        <div className='absolute top-20 right-20 w-40 h-40 rounded-full bg-purple-400/10 blur-3xl animate-pulse delay-1000'></div>
+        <div className='absolute bottom-20 left-1/3 w-28 h-28 rounded-full bg-pink-400/10 blur-2xl animate-pulse delay-2000'></div>
       </div>
       
       <div className='text-center relative z-10'>
-        <h2 ref={titleRef} className='text-slate-700 text-[42px] font-semibold'>
+        <h2 ref={titleRef} className='text-white text-[42px] font-semibold'>
           AI-Powered Creation Suite
         </h2>
-        <p ref={subtitleRef} className='text-gray-500 max-w-lg mx-auto'>
+        <p ref={subtitleRef} className='text-gray-400 max-w-lg mx-auto'>
           Your complete AI-powered content creation toolkit - from ideation to optimization
         </p>
       </div>
@@ -267,7 +267,7 @@ const AiTools = () => {
           <div 
             key={index} 
             ref={el => toolCardsRef.current[index] = el}
-            className='p-8 m-4 max-w-xs rounded-lg bg-[#FDFDFE] shadow-lg border border-gray-100 cursor-pointer relative overflow-hidden group'
+            className='p-8 m-4 max-w-xs rounded-lg bg-zinc-900 shadow-lg border border-zinc-800 cursor-pointer relative overflow-hidden group'
             onClick={() => user && navigate(tool.path)}
           >
             {/* Background glow effect */}
@@ -281,10 +281,10 @@ const AiTools = () => {
                   background: `linear-gradient(to bottom, ${tool.bg.from}, ${tool.bg.to})`
                 }}
               />
-              <h3 className='mt-6 mb-3 text-lg font-semibold group-hover:text-blue-600 transition-colors duration-300'>
+              <h3 className='mt-6 mb-3 text-lg font-semibold text-white group-hover:text-blue-400 transition-colors duration-300'>
                 {tool.title}
               </h3>
-              <p className='text-gray-400 text-sm max-w-[95%] group-hover:text-gray-600 transition-colors duration-300'>
+              <p className='text-gray-400 text-sm max-w-[95%] group-hover:text-gray-300 transition-colors duration-300'>
                 {tool.description}
               </p>
             </div>

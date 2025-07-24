@@ -99,7 +99,7 @@ const Plan = () => {
               
               // Enhanced shadow
               gsap.to(card, {
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                boxShadow: '0 25px 50px -12px rgba(255, 255, 255, 0.05)',
                 duration: 0.4,
                 ease: "power2.out"
               })
@@ -128,7 +128,7 @@ const Plan = () => {
                 })
               } else {
                 gsap.to(card, {
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 10px 15px -3px rgba(255, 255, 255, 0.02)',
                   duration: 0.4
                 })
               }
@@ -175,19 +175,19 @@ const Plan = () => {
   }, [])
 
   return (
-    <div ref={containerRef} className='max-w-6xl mx-auto z-20 py-24 px-4 sm:px-8 relative overflow-hidden'>
+    <div ref={containerRef} className='max-w-8xl mx-auto py-24 px-4 sm:px-8 relative overflow-hidden bg-zinc-950'>
       {/* Background decorative elements */}
       <div ref={backgroundRef} className='absolute inset-0 pointer-events-none overflow-hidden'>
-        <div className='absolute top-10 left-10 w-32 h-32 rounded-full bg-blue-400/5 blur-3xl animate-pulse'></div>
-        <div className='absolute top-20 right-20 w-40 h-40 rounded-full bg-purple-400/5 blur-3xl animate-pulse delay-1000'></div>
-        <div className='absolute bottom-20 left-1/3 w-28 h-28 rounded-full bg-indigo-400/5 blur-2xl animate-pulse delay-2000'></div>
+        <div className='absolute top-10 left-10 w-32 h-32 rounded-full bg-blue-400/10 blur-3xl animate-pulse'></div>
+        <div className='absolute top-20 right-20 w-40 h-40 rounded-full bg-purple-400/10 blur-3xl animate-pulse delay-1000'></div>
+        <div className='absolute bottom-20 left-1/3 w-28 h-28 rounded-full bg-indigo-400/10 blur-2xl animate-pulse delay-2000'></div>
       </div>
       
       <div className='text-center relative z-10'>
-        <h2 ref={titleRef} className='text-slate-700 text-[42px] font-semibold opacity-0'>
+        <h2 ref={titleRef} className='text-white text-[42px] font-semibold opacity-0'>
           Choose Your Plan
         </h2>
-        <p ref={subtitleRef} className='text-gray-500 max-w-lg mx-auto opacity-0'>
+        <p ref={subtitleRef} className='text-gray-300 max-w-lg mx-auto opacity-0'>
           Start for free and scale up as you grow. Find the perfect plan for your content creation needs.
         </p>
       </div>
@@ -200,8 +200,8 @@ const Plan = () => {
         
         {/* Additional call-to-action */}
         <div className='mt-12 text-center opacity-0' id='cta-section'>
-          <p className='text-gray-500 mb-6'>Need help choosing? <a href='#' className='text-primary hover:underline'>Compare all plans</a></p>
-          <button className='bg-primary text-white px-8 py-3 rounded-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-lg hover:shadow-primary/30 font-medium'>
+          <p className='text-gray-400 mb-6'>Need help choosing? <a href='#' className='text-blue-400 hover:underline'>Compare all plans</a></p>
+          <button className='bg-blue-600 text-white px-8 py-3 rounded-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-lg hover:shadow-blue-600/30 font-medium'>
             Get Started Today
           </button>
         </div>

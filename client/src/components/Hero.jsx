@@ -141,7 +141,7 @@ const Hero = () => {
           // Add glow effect to primary button
           if (index === 0) {
             gsap.to(button, {
-              boxShadow: '0 20px 40px rgba(59, 130, 246, 0.4)',
+              boxShadow: '0 20px 40px rgba(99, 102, 241, 0.4)',
               duration: 0.4,
               ease: "power2.out"
             })
@@ -159,7 +159,7 @@ const Hero = () => {
           
           if (index === 0) {
             gsap.to(button, {
-              boxShadow: '0 4px 14px 0 rgba(0, 118, 255, 0.39)',
+              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.39)',
               duration: 0.4,
               ease: "power2.out"
             })
@@ -301,33 +301,33 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className='px-4 sm:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center bg-[url(/gradientBackground.png)] bg-cover bg-no-repeat min-h-screen overflow-hidden'
+      className='px-4 sm:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center bg-zinc-950 min-h-screen overflow-hidden'
     >
       {/* Enhanced background decorative elements */}
       <div className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none'>
         <div 
           ref={el => bgElementsRef.current[0] = el}
-          className='absolute top-20 left-10 w-40 h-40 rounded-full bg-primary/10 blur-3xl'
+          className='absolute top-20 left-10 w-40 h-40 rounded-full bg-indigo-900/20 blur-3xl'
         ></div>
         <div 
           ref={el => bgElementsRef.current[1] = el}
-          className='absolute bottom-10 right-10 w-60 h-60 rounded-full bg-secondary/10 blur-3xl'
+          className='absolute bottom-10 right-10 w-60 h-60 rounded-full bg-purple-900/20 blur-3xl'
         ></div>
         <div 
           ref={el => bgElementsRef.current[2] = el}
-          className='absolute top-1/2 right-1/4 w-32 h-32 rounded-full bg-primary/5 blur-2xl'
+          className='absolute top-1/2 right-1/4 w-32 h-32 rounded-full bg-indigo-900/10 blur-2xl'
         ></div>
         <div 
           ref={el => bgElementsRef.current[3] = el}
-          className='absolute top-1/4 left-1/3 w-28 h-28 rounded-full bg-primary/8 blur-xl'
+          className='absolute top-1/4 left-1/3 w-28 h-28 rounded-full bg-indigo-900/15 blur-xl'
         ></div>
         <div 
           ref={el => bgElementsRef.current[4] = el}
-          className='absolute bottom-1/3 left-1/5 w-36 h-36 rounded-full bg-secondary/8 blur-2xl'
+          className='absolute bottom-1/3 left-1/5 w-36 h-36 rounded-full bg-purple-900/15 blur-2xl'
         ></div>
         <div 
           ref={el => bgElementsRef.current[5] = el}
-          className='absolute top-10 right-1/3 w-24 h-24 rounded-full bg-primary/12 blur-xl'
+          className='absolute top-10 right-1/3 w-24 h-24 rounded-full bg-indigo-900/20 blur-xl'
         ></div>
       </div>
 
@@ -335,14 +335,14 @@ const Hero = () => {
         <div className='text-center mb-6 z-10 relative'>
           <h1 
             ref={titleRef}
-            className='text-4xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold mx-auto leading-[1.2]'
+            className='text-4xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold mx-auto leading-[1.2] text-white'
           >
-            Powerful content creation <br/> powered by <span className='text-primary'>AI tools</span>
+            Powerful content creation <br/> powered by <span className='text-indigo-400'>AI tools</span>
           </h1>
           
           <p 
             ref={subtitleRef}
-            className='mt-6 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto text-gray-600 text-sm sm:text-base'
+            className='mt-6 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto text-zinc-400 text-sm sm:text-base'
           >
           Multiply your creative output with AI that crafts text, generates visuals, and streamlines processes.
           </p>
@@ -354,13 +354,13 @@ const Hero = () => {
         >
           <button 
             onClick={() => navigate('/ai')} 
-            className='bg-primary text-white px-8 py-3 rounded-lg cursor-pointer shadow-lg hover:shadow-primary/30 font-medium transition-shadow duration-300'
+            className='bg-indigo-600 text-white px-8 py-3 rounded-lg cursor-pointer shadow-lg hover:shadow-indigo-500/30 font-medium transition-shadow duration-300 hover:bg-indigo-500'
           >
             Start creating now
           </button>
           
           <button 
-            className='bg-white px-8 py-3 rounded-lg border border-gray-200 cursor-pointer shadow-sm hover:shadow-gray-300/30 font-medium transition-shadow duration-300'
+            className='bg-zinc-800 text-white px-8 py-3 rounded-lg border border-zinc-700 cursor-pointer shadow-sm hover:shadow-zinc-700/30 font-medium transition-shadow duration-300 hover:bg-zinc-700'
           >
             Watch demo
           </button>
@@ -368,7 +368,7 @@ const Hero = () => {
 
         <div 
           ref={trustBadgeRef}
-          className='flex items-center gap-4 mt-12 mx-auto text-gray-600 bg-white/50 backdrop-blur-sm px-6 py-2 rounded-full border border-gray-100 shadow-sm z-10 relative w-fit cursor-pointer'
+          className='flex items-center gap-4 mt-12 mx-auto text-zinc-300 bg-zinc-800/50 backdrop-blur-sm px-6 py-2 rounded-full border border-zinc-700 shadow-sm z-10 relative w-fit cursor-pointer hover:bg-zinc-800/70 transition-colors'
         >
           <img src={assets.user_group} alt="" className='h-8'/> 
           <span className='text-sm font-medium'>Trusted by 10k+ creators</span>
