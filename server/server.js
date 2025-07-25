@@ -4,6 +4,7 @@ import "dotenv/config"
 import { clerkMiddleware, requireAuth } from '@clerk/express'
 import aiRouter from "./routes/aiRoutes.js"
 import connectCloudinary from "./configs/cloudinary.js"
+import userRouter from "./routes/userRoutes.js"
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -22,6 +23,7 @@ app.get('/',(req,res)=>{
 app.use(requireAuth()) // only login users can access this routes
 
 app.use('/api/ai',aiRouter)
+app.use('/api/user',userRouter)
 
 app.listen(PORT, ()=>{
     console.log(`Server is running on http://localhost:${PORT}`);
