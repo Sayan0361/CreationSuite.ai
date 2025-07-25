@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { AuroraText } from './magicui/aurora-text'
 
 const Hero = () => {
   const navigate = useNavigate()
@@ -303,6 +304,7 @@ const Hero = () => {
       ref={heroRef}
       className='px-4 sm:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center bg-zinc-950 min-h-screen overflow-hidden'
     >
+      
       {/* Enhanced background decorative elements */}
       <div className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none'>
         <div 
@@ -330,14 +332,14 @@ const Hero = () => {
           className='absolute top-10 right-1/3 w-24 h-24 rounded-full bg-indigo-900/20 blur-xl'
         ></div>
       </div>
-
+      
       <div ref={containerRef} className='w-full'>
         <div className='text-center mb-6 z-10 relative'>
           <h1 
             ref={titleRef}
             className='text-4xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold mx-auto leading-[1.2] text-white'
           >
-            Powerful content creation <br/> powered by <span className='text-indigo-400'>AI tools</span>
+            Powerful content creation <br/> powered by <span className='font-bold'><AuroraText>AI tools</AuroraText></span>
           </h1>
           
           <p 
@@ -374,6 +376,7 @@ const Hero = () => {
           <span className='text-sm font-medium'>Trusted by 10k+ creators</span>
         </div>
       </div>
+      
     </div>
   )
 }
