@@ -148,6 +148,80 @@ export const generateBlobTitle = async (req, res) => {
     }
 }
 
+export const humanizeText = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { text } = req.body;
+        const plan = req.plan;
+        const free_usage = req.free_usage;
+
+        // Validate input length
+        if (!text || text.trim().length === 0) {
+            return res.json({
+                success: false,
+                message: "Please provide text to humanize"
+            });
+        }
+
+        // Check word count (approximately)
+        const wordCount = text.trim().split(/\s+/).length;
+        if (wordCount > 1000) {
+            return res.json({
+                success: false,
+                message: "Text exceeds 1000 word limit"
+            });
+        }
+
+        // Check free tier limits
+        if (plan !== 'premium' && free_usage >= 10) {
+            return res.json({
+                success: false,
+                message: "Limit reached. Please upgrade to continue."
+            });
+        }
+
+        const prompt = `Please rewrite the following text to make it sound more natural and human-like, while preserving its original meaning. Make it conversational and engaging:\n\n${text}`;
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [{
+                role: "user",
+                content: prompt,
+            }],
+            temperature: 0.5, // Balanced creativity
+        });
+
+        const humanizedText = response.choices[0].message.content;
+
+        // Save to database
+        await sql`
+            INSERT INTO creations(user_id, prompt, content, type)
+            VALUES (${userId}, ${'Humanize text'}, ${humanizedText}, 'text-humanizer')
+        `;
+
+        // Update free usage count for free tier users
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: {
+                    free_usage: free_usage + 1
+                }
+            });
+        }
+
+        res.json({
+            success: true,
+            content: humanizedText
+        });
+
+    } catch (error) {
+        console.error(error.message);
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
 export const generateImage = async (req, res) => {
     try {
         // Get the authenticated user's ID from Clerk
@@ -209,7 +283,7 @@ export const removeImageBackground = async (req, res) => {
         // Get the authenticated user's ID from Clerk
         const { userId } = req.auth();
         // Get image from configs/multer.js
-        const {image} = req.file;
+        const image = req.file;
         // Get user's current plan (no free tier allowed here)
         const plan = req.plan;
         
@@ -260,7 +334,7 @@ export const removeImageObject = async (req, res) => {
         // Get the object
         const { object } = req.body;
         // Get image from configs/multer.js
-        const {image} = req.file;
+        const image = req.file;
         // Get user's current plan (no free tier allowed here)
         const plan = req.plan;
         // Only premium users can use image generation
@@ -282,7 +356,7 @@ export const removeImageObject = async (req, res) => {
         // Save the image URL and prompt to your database as a new creation
         await sql`
             INSERT INTO creations(user_id, prompt, content, type)
-            VALUES (${userId}, ${prompt}, ${secure_url}, 'image')
+            VALUES (${userId}, ${prompt}, ${public_id}, 'image')
         `;
         // Send the generated image URL back to the frontend
         res.json({
@@ -305,7 +379,7 @@ export const resumeReview = async (req, res) => {
         // Get the authenticated user's ID from Clerk
         const { userId } = req.auth();
         // Get resume from configs/multer.js
-        const {resume} = req.file;
+        const resume = req.file;
         // Get user's current plan (no free tier allowed here)
         const plan = req.plan;
         // Only premium users can use review resume
@@ -336,7 +410,6 @@ export const resumeReview = async (req, res) => {
                 },
             ],
             temperature: 0.7, // Controls creativity (0 = less random, 1 = more)
-            max_tokens: 1000, // Controls the length of the output
         });
 
         const content = response.choices[0].message.content
@@ -354,6 +427,110 @@ export const resumeReview = async (req, res) => {
     } catch (error) {
         // Log and return the error if something goes wrong
         console.log(error.message);
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
+export const calculateATSScore = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const resume = req.file;
+        const { jobDescription } = req.body;
+        const plan = req.plan;
+
+        // Only premium users can use this feature
+        if (plan !== 'premium') {
+            return res.json({
+                success: false,
+                message: "This feature is only available for premium subscriptions"
+            });
+        }
+
+        // Check file size
+        if (resume.size > 5 * 1024 * 1024) {
+            return res.json({
+                success: false,
+                message: "Resume file size exceeds 5MB"
+            });
+        }
+
+        // Read and parse PDF
+        const dataBuffer = fs.readFileSync(resume.path);
+        const pdfData = await pdf(dataBuffer);
+        const resumeText = pdfData.text;
+
+        // Prepare prompt for Gemini
+        const prompt = `
+        Analyze this resume against the provided job description and calculate an ATS compatibility score (0-100).
+        Consider these factors:
+        1. Keyword matching (20 points)
+        2. Skills alignment (20 points)
+        3. Experience relevance (20 points)
+        4. Education requirements (10 points)
+        5. Certifications (10 points)
+        6. Formatting (10 points)
+        7. Custom sections (10 points)
+
+        Return the response in this JSON format:
+        {
+            "score": number,
+            "breakdown": {
+                "keyword_matching": number,
+                "skills_alignment": number,
+                "experience_relevance": number,
+                "education_requirements": number,
+                "certifications": number,
+                "formatting": number,
+                "custom_sections": number
+            },
+            "feedback": string,
+            "suggestions": string[]
+        }
+
+        Job Description: ${jobDescription}
+        Resume Content: ${resumeText}
+        `;
+
+        // Call Gemini API
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [{
+                role: "user",
+                content: prompt,
+            }],
+            temperature: 0.3, // Lower temperature for more deterministic scoring
+        });
+
+        let result;
+        try {
+            // Try to parse the JSON response
+            result = JSON.parse(response.choices[0].message.content);
+        } catch (e) {
+            // If parsing fails, try to extract JSON from markdown
+            const jsonMatch = response.choices[0].message.content.match(/```json\n([\s\S]*?)\n```/);
+            if (jsonMatch) {
+                result = JSON.parse(jsonMatch[1]);
+            } else {
+                throw new Error("Failed to parse ATS score response");
+            }
+        }
+
+        // Save results to database
+        await sql`
+            INSERT INTO creations(user_id, prompt, content, type)
+            VALUES (${userId}, ${`ATS Score for ${resume.originalname}`}, ${JSON.stringify(result)}, 'ats-score')
+        `;
+
+        res.json({
+            success: true,
+            content: result
+        });
+
+    } catch (error) {
+        console.error(error.message);
         res.json({
             success: false,
             message: error.message

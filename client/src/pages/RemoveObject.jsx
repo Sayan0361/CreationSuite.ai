@@ -1,4 +1,4 @@
-import { Scissors, Sparkles } from 'lucide-react'
+import { Scissors, Sparkles, Download } from 'lucide-react'
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '@clerk/clerk-react';
@@ -10,37 +10,63 @@ const RemoveObject = () => {
 
   const [input, setInput] = useState('')
   const [object, setObject] = useState('')
-
   const [loading, setLoading] = useState(false)
   const [content, setContent] = useState('')
+  const [downloading, setDownloading] = useState(false)
 
   const {getToken} = useAuth()
       
-    const onSubmitHandler = async (e)=>{
-          e.preventDefault();
-          try {
-            setLoading(true)
+  const onSubmitHandler = async (e)=>{
+    e.preventDefault();
+    try {
+      setLoading(true)
 
-            if(object.split(' ').length > 1){
-              return toast('Please enter only one object name')
-            }
+      if(object.split(' ').length > 1){
+        return toast('Please enter only one object name')
+      }
 
-              const formData = new FormData()
-              formData.append('image', input)
-              formData.append('object', object)
+      const formData = new FormData()
+      formData.append('image', input)
+      formData.append('object', object)
 
-              const { data } = await axios.post('/api/ai/remove-image-object',formData, {headers: {Authorization: `Bearer ${await getToken()}`}})
+      const { data } = await axios.post('/api/ai/remove-image-object',formData, {headers: {Authorization: `Bearer ${await getToken()}`}})
 
-            if (data.success) {
-              setContent(data.content)
-            }else{
-              toast.error(data.message)
-            }
-          } catch (error) {
-            toast.error(error.message)
-          }
-          setLoading(false)
-        }
+      if (data.success) {
+        setContent(data.content)
+      }else{
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+    setLoading(false)
+  }
+
+  const downloadImage = async () => {
+    if (!content) return;
+    
+    try {
+      setDownloading(true);
+      const response = await fetch(content);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `object-removed-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      toast.error('Failed to download image');
+      console.error('Download error:', error);
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <div className='h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-white'>
@@ -70,7 +96,7 @@ const RemoveObject = () => {
           </button>
       </form>
       {/* Right col */}
-      <div className='w-full max-w-lg p-4 bg-zinc-900 rounded-lg flex flex-col  min-h-96'>
+      <div className='w-full max-w-lg p-4 bg-zinc-900 rounded-lg flex flex-col min-h-96'>
 
             <div className='flex items-center gap-3'>
               <Scissors className='w-5 h-5 text-[#4A7AFF]' />
@@ -80,22 +106,36 @@ const RemoveObject = () => {
             {
               !content ? 
               (
-              <div className='flex-1 flex justify-center items-center'>
-              <div className='text-sm flex flex-col items-center gap-5 text-white'>
-                <Scissors className='w-9 h-9' />
-                <p>Upload an image and click "Remove Object" to get started</p>
-              </div>
-            </div>
-            )
+                <div className='flex-1 flex justify-center items-center'>
+                  <div className='text-sm flex flex-col items-center gap-5 text-white'>
+                    <Scissors className='w-9 h-9' />
+                    <p>Upload an image and click "Remove Object" to get started</p>
+                  </div>
+                </div>
+              )
               :
               (
-                <img src={content} alt="image" className='mt-3 w-full h-full '/>
+                <div className='mt-3 h-full flex flex-col'>
+                  <img src={content} alt="object removed" className='w-full h-full object-contain'/>
+                  <button 
+                    onClick={downloadImage}
+                    disabled={downloading}
+                    className='mt-4 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50'
+                  >
+                    {downloading ? (
+                      <span className='w-4 h-4 rounded-full border-2 border-t-transparent animate-spin'></span>
+                    ) : (
+                      <>
+                        <Download className='w-4 h-4' />
+                        Download Image
+                      </>
+                    )}
+                  </button>
+                </div>
               )
             }
-            
       </div>
     </div>
-   
   )
 }
 

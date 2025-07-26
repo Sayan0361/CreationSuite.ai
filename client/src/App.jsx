@@ -13,6 +13,8 @@ import Community from './pages/Community'
 import {Toaster} from 'react-hot-toast'
 import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
+import CalculateATSScore from './pages/CalculateATSScore'
+import HumanizeText from './pages/HumanizeText'
 
 const App = () => {
   // api testing
@@ -29,10 +31,12 @@ const App = () => {
             <Route index element={<Dashboard/>} />
             <Route path='write-article' element={<WriteArticle/>} />
             <Route path='blog-titles' element={<BlogTitles/>} />
+            <Route path='humanize-text' element={<HumanizeText/>} />
             <Route path='generate-images' element={<GenerateImages/>} />
             <Route path='remove-background' element={<RemoveBackground/>} />
             <Route path='remove-object' element={<RemoveObject/>} />
             <Route path='review-resume' element={<ReviewResume/>} />
+            <Route path='calculate-ats-score' element={<CalculateATSScore/>} />
             <Route path='community' element={<Community/>} />
           </Route>
         </Routes>
