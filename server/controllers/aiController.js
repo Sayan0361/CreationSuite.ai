@@ -112,7 +112,6 @@ export const generateBlobTitle = async (req, res) => {
                 },
             ],
             temperature: 0.7, // Controls creativity (0 = less random, 1 = more)
-            max_tokens: 100, // Controls the length of the output
         });
 
         // Extract the generated content from the response

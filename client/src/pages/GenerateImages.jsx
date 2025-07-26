@@ -1,4 +1,4 @@
-import { Image, Sparkles } from 'lucide-react'
+import { Image, Sparkles, Download } from 'lucide-react'
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '@clerk/clerk-react';
@@ -10,33 +10,61 @@ const GenerateImages = () => {
 
   const imageStyle = ['Realistic', 'Ghibli style', 'Anime style', 'Cartoon style', 'Fantasy style', 'Realistic style', '3D style', 'Portrait style']
     
-      const [selectedStyle, setSelectedStyle] = useState('Realistic')
-      const [input, setInput] = useState('')
-      const [publish, setPublish] = useState(false)
-      const [loading, setLoading] = useState(false)
-      const [content, setContent] = useState('')
+  const [selectedStyle, setSelectedStyle] = useState('Realistic')
+  const [input, setInput] = useState('')
+  const [publish, setPublish] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [content, setContent] = useState('')
+  const [downloading, setDownloading] = useState(false)
 
-      const {getToken} = useAuth()
-    
-      const onSubmitHandler = async (e)=>{
-        e.preventDefault();
-        try {
-          setLoading(true)
+  const {getToken} = useAuth()
 
-          const prompt = `Generate an image of ${input} in the style ${selectedStyle}`
+  const onSubmitHandler = async (e)=>{
+    e.preventDefault();
+    try {
+      setLoading(true)
 
-          const { data } = await axios.post('/api/ai/generate-image', {prompt, publish}, {headers: {Authorization: `Bearer ${await getToken()}`}})
+      const prompt = `Generate an image of ${input} in the style ${selectedStyle}. Create a very good image plsss.`
 
-         if (data.success) {
-          setContent(data.content)
-         }else{
-          toast.error(data.message)
-         }
-        } catch (error) {
-          toast.error(error.message)
-        }
-        setLoading(false)
+      const { data } = await axios.post('/api/ai/generate-image', {prompt, publish}, {headers: {Authorization: `Bearer ${await getToken()}`}})
+
+      if (data.success) {
+        setContent(data.content)
+        toast.success("Image Generated")
+      }else{
+        toast.error(data.message)
       }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    setLoading(false)
+  }
+
+  const downloadImage = async () => {
+    if (!content) return;
+    
+    try {
+      setDownloading(true);
+      const response = await fetch(content);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ai-generated-image-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      toast.error('Failed to download image');
+      console.error('Download error:', error);
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <div className='h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-white'>
@@ -91,12 +119,26 @@ const GenerateImages = () => {
                 <div className='flex-1 flex justify-center items-center'>
                   <div className='text-sm flex flex-col items-center gap-5 text-gray-400'>
                     <Image className='w-9 h-9' />
-                    <p>Enter a topic and click “Generate image ” to get started</p>
+                    <p>Enter a topic and click "Generate image" to get started</p>
                   </div>
                 </div>
               ) : (
-                <div className='mt-3 h-full'>
-                  <img src={content} alt="image" className='w-full h-full'/>
+                <div className='mt-3 h-full flex flex-col'>
+                  <img src={content} alt="generated content" className='w-full h-full object-contain'/>
+                  <button 
+                    onClick={downloadImage}
+                    disabled={downloading}
+                    className='mt-4 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50'
+                  >
+                    {downloading ? (
+                      <span className='w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin'></span>
+                    ) : (
+                      <>
+                        <Download className='w-4 h-4' />
+                        Download Image
+                      </>
+                    )}
+                  </button>
                 </div>
               )
             }

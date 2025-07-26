@@ -15,6 +15,7 @@ import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 
 const App = () => {
+  // api testing
   const {getToken} = useAuth()
   useEffect(()=>{
     getToken().then((token)=>console.log(token))

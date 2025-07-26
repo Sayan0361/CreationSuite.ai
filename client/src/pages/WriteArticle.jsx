@@ -1,4 +1,4 @@
-import { Edit, Sparkles } from 'lucide-react'
+import { Edit, Sparkles, Copy } from 'lucide-react'
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '@clerk/clerk-react';
@@ -26,7 +26,7 @@ const WriteArticle = () => {
     e.preventDefault();
     try {
       setLoading(true)
-      const prompt = `Write an article about ${input} in ${selectedLength.text}`
+      const prompt = `Write an article about ${input} in ${selectedLength.text} only. Write it just like a Human and don't exceed the length limit.`
 
       const {data} = await axios.post('/api/ai/generate-article', {prompt, length:selectedLength.length}, {
         headers: {Authorization: `Bearer ${await getToken()}`}
@@ -34,6 +34,7 @@ const WriteArticle = () => {
 
       if(data.success){
         setContent(data.content)
+        toast.success("Article Generated")
       }else{
         toast.error(data.message)
       }
@@ -42,6 +43,17 @@ const WriteArticle = () => {
     }
     setLoading(false)
   }
+
+  const copyToClipboard = () => {
+    if (!content) return;
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        toast.success('Article copied to clipboard!');
+      })
+      .catch(() => {
+        toast.error('Failed to copy article');
+      });
+  };
 
   return (
     <div className='h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-white'>
@@ -75,20 +87,32 @@ const WriteArticle = () => {
       {/* Right col */}
       <div className='w-full max-w-lg p-4 bg-zinc-900 rounded-lg flex flex-col min-h-96 max-h-[600px]'>
 
-            <div className='flex items-center gap-3'>
-              <Edit className='w-5 h-5 text-[#4A7AFF]' />
-              <h1 className='text-xl font-semibold'>Generated article</h1>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <Edit className='w-5 h-5 text-[#4A7AFF]' />
+                <h1 className='text-xl font-semibold'>Generated article</h1>
+              </div>
+              {content && (
+                <button 
+                  onClick={copyToClipboard}
+                  className='flex items-center gap-1 text-sm text-gray-300 hover:text-white'
+                  title="Copy article"
+                >
+                  <Copy className='w-4 h-4' />
+                  Copy
+                </button>
+              )}
             </div>
 
             {!content ? (
               <div className='flex-1 flex justify-center items-center'>
               <div className='text-sm flex flex-col items-center gap-5 text-gray-400'>
                 <Edit className='w-9 h-9' />
-                <p>Enter a topic and click “Generate article ” to get started</p>
+                <p>Enter a topic and click "Generate article" to get started</p>
               </div>
             </div>
             ) : (
-              <div className='mt-3 h-full overflow-y-scroll text-sm text-slate-600'>
+              <div className='mt-3 h-full overflow-y-scroll text-sm text-white'>
                 <div className='reset-tw'>
                   <Markdown>{content}</Markdown>
                 </div>
