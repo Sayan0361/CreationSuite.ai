@@ -184,7 +184,7 @@ const Plan = () => {
       </div>
       
       <div className='text-center relative z-10'>
-        <h2 ref={titleRef} className='text-white text-[42px] font-semibold opacity-0'>
+        <h2 ref={titleRef} className='text-white text-[42px] text-4xl font-bold opacity-0'>
           Choose Your Plan
         </h2>
         <p ref={subtitleRef} className='text-gray-300 max-w-lg mx-auto opacity-0'>
@@ -198,13 +198,6 @@ const Plan = () => {
           <PricingTable />
         </div>
         
-        {/* Additional call-to-action */}
-        <div className='mt-12 text-center opacity-0' id='cta-section'>
-          <p className='text-gray-400 mb-6'>Need help choosing? <a href='#' className='text-blue-400 hover:underline'>Compare all plans</a></p>
-          <button className='bg-blue-600 text-white px-8 py-3 rounded-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-lg hover:shadow-blue-600/30 font-medium'>
-            Get Started Today
-          </button>
-        </div>
       </div>
     </div>
   )

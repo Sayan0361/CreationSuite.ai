@@ -5,7 +5,7 @@ import star_icon from "./star_icon.svg";
 import star_dull_icon from "./star_dull_icon.svg";
 import profile_img_1 from "./profile_img_1.png";
 import arrow_icon from "./arrow_icon.svg";
-import { SquarePen, Hash, Image, Eraser, Scissors, FileText } from 'lucide-react'
+import { SquarePen, Hash, Image, Eraser, Scissors, FileText, Sparkles,BarChart2,MessageSquare,Users } from 'lucide-react'
 import ai_gen_img_1 from "./ai_gen_img_1.png";
 import ai_gen_img_2 from "./ai_gen_img_2.png";
 import ai_gen_img_3 from "./ai_gen_img_3.png";
@@ -37,8 +37,15 @@ export const AiToolsData = [
         path: '/ai/blog-titles'
     },
     {
+        title: 'Text Humanizer',
+        description: 'Convert AI-generated text into natural, human-like content that passes detection.',
+        Icon: Sparkles,
+        bg: { from: '#FF8A00', to: '#FF5E00' },
+        path: '/ai/humanize-text'
+    },
+    {
         title: 'AI Art Generator',
-        description: 'Transform your ideas into breathtaking visuals with our AI-powered art generator. ',
+        description: 'Transform your ideas into breathtaking visuals with our AI-powered art generator.',
         Icon: Image,
         bg: { from: '#20C363', to: '#11B97E' },
         path: '/ai/generate-images'
@@ -63,8 +70,22 @@ export const AiToolsData = [
         Icon: FileText,
         bg: { from: '#12B7AC', to: '#08B6CE' },
         path: '/ai/review-resume'
-    }
-]
+    },
+    {
+        title: 'ATS Score Calculator',
+        description: 'Analyze how well your resume performs against Applicant Tracking Systems.',
+        Icon: BarChart2,
+        bg: { from: '#8E44AD', to: '#9B59B6' },
+        path: '/ai/calculate-ats-score'
+    },
+    {
+        title: 'Chat With PDF',
+        description: 'Upload and interact with PDF documents using our AI-powered chat interface.',
+        Icon: MessageSquare,
+        bg: { from: '#00DA83', to: '#009BB3' },
+        path: '/ai/chat-with-pdf'
+    },
+];
 
 export const dummyTestimonialData = [
     {
@@ -202,3 +223,22 @@ export const socialImgs = [
     url: "https://www.instagram.com/sayan_sen007/"
   },
 ];
+
+export const steps = [
+    {
+      title: "Choose Your Tool",
+      description: "Select from our suite of AI-powered creation tools tailored for your needs or click on Start Creating Now",
+      icon: "1"
+    },
+    {
+      title: "Customize Your Request",
+      description: "Provide details and preferences to guide the AI generation process",
+      icon: "2"
+    },
+    {
+      title: "Generate & Refine",
+      description: "Get instant results and fine-tune them to perfection",
+      icon: "3"
+    }
+  ]
+

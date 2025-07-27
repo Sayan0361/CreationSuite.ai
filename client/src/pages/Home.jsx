@@ -5,6 +5,8 @@ import AiTools from '../components/AiTools'
 import Testimonial from '../components/Testimonial'
 import Plan from '../components/Plan'
 import Footer from '../components/Footer'
+import FAQ from '../components/Faq'
+import HowItWorks from '../components/HowItWorks'
 
 const Home = () => {
   return (
@@ -13,8 +15,10 @@ const Home = () => {
       <main className="flex-grow">
         <Hero/>
         <AiTools/>
+        <HowItWorks/>
         <Testimonial />
         <Plan/>
+        <FAQ/>
       </main>
       <Footer/>
     </div>

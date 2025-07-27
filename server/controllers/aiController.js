@@ -285,46 +285,36 @@ export const generateImage = async (req, res) => {
 
 export const removeImageBackground = async (req, res) => {
     try {
-        // Get the authenticated user's ID from Clerk
         const { userId } = req.auth();
-        // Get image from configs/multer.js
-        const image = req.file;
-        // Get user's current plan (no free tier allowed here)
+        const image = req.file; // From memoryStorage
         const plan = req.plan;
-        
-        // Only premium users can use image generation
+
         if (plan !== 'premium') {
             return res.json({
                 success: false,
                 message: "This feature is only available for premium subscriptions"
             });
         }
+
+        // Convert buffer to base64 for Cloudinary
+        const base64Image = `data:${image.mimetype};base64,${image.buffer.toString('base64')}`;
         
-        // Upload the image to Cloudinary and get the secure URL
-        const { secure_url } = await cloudinary.uploader.upload(image.path,{
-            transformation:[
-                {
-                    effect: 'background_removal',
-                    background_removal: 'remove_the_background'
-                }
-            ]
+        const { secure_url } = await cloudinary.uploader.upload(base64Image, {
+            transformation: [{ effect: 'background_removal' }]
         });
 
-        const prompt = 'Remove Background from the image'
-        // Save the image URL and prompt to your database as a new creation
         await sql`
             INSERT INTO creations(user_id, prompt, content, type)
-            VALUES (${userId}, ${prompt}, ${secure_url}, 'image')
+            VALUES (${userId}, 'Remove Background', ${secure_url}, 'image')
         `;
-        // Send the generated image URL back to the frontend
+
         res.json({
             success: true,
             content: secure_url
         });
 
     } catch (error) {
-        // Log and return the error if something goes wrong
-        console.log(error.message);
+        console.error(error.message);
         res.json({
             success: false,
             message: error.message
@@ -334,44 +324,39 @@ export const removeImageBackground = async (req, res) => {
 
 export const removeImageObject = async (req, res) => {
     try {
-        // Get the authenticated user's ID from Clerk
         const { userId } = req.auth();
-        // Get the object
         const { object } = req.body;
-        // Get image from configs/multer.js
-        const image = req.file;
-        // Get user's current plan (no free tier allowed here)
+        const image = req.file; // From memoryStorage
         const plan = req.plan;
-        // Only premium users can use image generation
+
         if (plan !== 'premium') {
             return res.json({
                 success: false,
                 message: "This feature is only available for premium subscriptions"
             });
         }
+
+        // Convert buffer to base64 for Cloudinary
+        const base64Image = `data:${image.mimetype};base64,${image.buffer.toString('base64')}`;
         
-        // Upload the image to Cloudinary and get the secure URL
-        const { public_id } = await cloudinary.uploader.upload(image.path);
-        
+        const { public_id } = await cloudinary.uploader.upload(base64Image);
         const imageUrl = cloudinary.url(public_id, {
-            transformation:[{effect:`gen_remove:${object}`}],
-            resource_type:'image'
-        })
-        const prompt = `Remove ${object} from the Image`
-        // Save the image URL and prompt to your database as a new creation
+            transformation: [{ effect: `gen_remove:${object}` }],
+            resource_type: 'image'
+        });
+
         await sql`
             INSERT INTO creations(user_id, prompt, content, type)
-            VALUES (${userId}, ${prompt}, ${public_id}, 'image')
+            VALUES (${userId}, ${`Remove ${object}`}, ${public_id}, 'image')
         `;
-        // Send the generated image URL back to the frontend
+
         res.json({
             success: true,
             content: imageUrl
         });
 
     } catch (error) {
-        // Log and return the error if something goes wrong
-        console.log(error.message);
+        console.error(error.message);
         res.json({
             success: false,
             message: error.message
@@ -379,59 +364,44 @@ export const removeImageObject = async (req, res) => {
     }
 }
 
+// ==================== PDF PROCESSING ====================
 export const resumeReview = async (req, res) => {
     try {
-        // Get the authenticated user's ID from Clerk
         const { userId } = req.auth();
-        // Get resume from configs/multer.js
-        const resume = req.file;
-        // Get user's current plan (no free tier allowed here)
+        const resume = req.file; // From memoryStorage
         const plan = req.plan;
-        // Only premium users can use review resume
+
         if (plan !== 'premium') {
             return res.json({
                 success: false,
                 message: "This feature is only available for premium subscriptions"
             });
         }
-        if(resume.size> 5*1024*1024)
-            return res.json({
-                success: false,
-                message:"Resume file size exceeds 5mb"
-            })
-        
-        const dataBuffer = fs.readFileSync(resume.path)
-        const pdfData = await pdf(dataBuffer)
 
-        const prompt = `Review the following resume and provide constructive feedback on its strengths,weaknesses and areas for feasible improvements.Also provide a roadmap what needs to be done. Also be frank and guide as an experienced industry level helpful senior. Resume Content:\n\n${pdfData.text}`
-        
-        // Use Gemini's API to generate content from the given prompt
+        // Process PDF directly from buffer
+        const pdfData = await pdf(resume.buffer);
+        const prompt = `Review this resume: ${pdfData.text}`;
+
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash", // Model to use
-            messages: [
-                {
-                    role: "user", // Send the user prompt to the AI
-                    content: prompt,
-                },
-            ],
-            temperature: 0.7, // Controls creativity (0 = less random, 1 = more)
+            model: "gemini-2.0-flash",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7
         });
 
-        const content = response.choices[0].message.content
-        // Save the image URL and prompt to your database as a new creation
+        const content = response.choices[0].message.content;
+
         await sql`
             INSERT INTO creations(user_id, prompt, content, type)
-            VALUES (${userId}, 'Review the uploaded resume', ${content}, 'resume-review')
+            VALUES (${userId}, 'Resume Review', ${content}, 'resume-review')
         `;
-        // Send the generated image URL back to the frontend
+
         res.json({
             success: true,
-            content: content
+            content
         });
 
     } catch (error) {
-        // Log and return the error if something goes wrong
-        console.log(error.message);
+        console.error(error.message);
         res.json({
             success: false,
             message: error.message
@@ -442,11 +412,10 @@ export const resumeReview = async (req, res) => {
 export const calculateATSScore = async (req, res) => {
     try {
         const { userId } = req.auth();
-        const resume = req.file;
+        const resume = req.file; // From memoryStorage
         const { jobDescription } = req.body;
         const plan = req.plan;
 
-        // Only premium users can use this feature
         if (plan !== 'premium') {
             return res.json({
                 success: false,
@@ -454,76 +423,37 @@ export const calculateATSScore = async (req, res) => {
             });
         }
 
-        // Check file size
-        if (resume.size > 5 * 1024 * 1024) {
-            return res.json({
-                success: false,
-                message: "Resume file size exceeds 5MB"
-            });
-        }
-
-        // Read and parse PDF
-        const dataBuffer = fs.readFileSync(resume.path);
-        const pdfData = await pdf(dataBuffer);
+        // Process PDF directly from buffer
+        const pdfData = await pdf(resume.buffer);
         const resumeText = pdfData.text;
 
-        // Prepare prompt for Gemini
         const prompt = `
-        Analyze this resume against the provided job description and calculate an ATS compatibility score (0-100).
-        Consider these factors:
-        1. Keyword matching (20 points)
-        2. Skills alignment (20 points)
-        3. Experience relevance (20 points)
-        4. Education requirements (10 points)
-        5. Certifications (10 points)
-        6. Formatting (10 points)
-        7. Custom sections (10 points)
-
-        Return the response in this JSON format:
+        Analyze this resume against the job description and return an ATS score (0-100) in JSON format:
         {
             "score": number,
-            "breakdown": {
-                "keyword_matching": number,
-                "skills_alignment": number,
-                "experience_relevance": number,
-                "education_requirements": number,
-                "certifications": number,
-                "formatting": number,
-                "custom_sections": number
-            },
+            "breakdown": { ... },
             "feedback": string,
             "suggestions": string[]
         }
-
         Job Description: ${jobDescription}
         Resume Content: ${resumeText}
         `;
 
-        // Call Gemini API
         const response = await AI.chat.completions.create({
             model: "gemini-2.0-flash",
-            messages: [{
-                role: "user",
-                content: prompt,
-            }],
-            temperature: 0.3, // Lower temperature for more deterministic scoring
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.3
         });
 
+        // Parse the JSON response
         let result;
         try {
-            // Try to parse the JSON response
-            result = JSON.parse(response.choices[0].message.content);
-        } catch (e) {
-            // If parsing fails, try to extract JSON from markdown
             const jsonMatch = response.choices[0].message.content.match(/```json\n([\s\S]*?)\n```/);
-            if (jsonMatch) {
-                result = JSON.parse(jsonMatch[1]);
-            } else {
-                throw new Error("Failed to parse ATS score response");
-            }
+            result = jsonMatch ? JSON.parse(jsonMatch[1]) : JSON.parse(response.choices[0].message.content);
+        } catch (e) {
+            throw new Error("Failed to parse ATS score response");
         }
 
-        // Save results to database
         await sql`
             INSERT INTO creations(user_id, prompt, content, type)
             VALUES (${userId}, ${`ATS Score for ${resume.originalname}`}, ${JSON.stringify(result)}, 'ats-score')
@@ -545,66 +475,40 @@ export const calculateATSScore = async (req, res) => {
 
 export const chatWithPDF = async (req, res) => {
     try {
-        // Authentication and premium check
         const { userId } = req.auth();
+        const { message, chatHistory = [] } = req.body;
+        const pdfFile = req.file;
         const plan = req.plan;
-        
+
+        // Premium check
         if (plan !== 'premium') {
             return res.status(403).json({
                 success: false,
-                message: "PDF chat feature requires a premium subscription"
+                message: "Premium feature"
             });
         }
 
-        // Validate request
-        if (!req.file) {
+        // Validate inputs
+        if (!pdfFile || !message) {
             return res.status(400).json({
                 success: false,
-                message: "No PDF file uploaded"
+                message: "Missing PDF or message"
             });
         }
 
-        // Parse additional form data
-        const { message, chatHistory } = req.body;
-        
-        if (!message) {
-            return res.status(400).json({
-                success: false,
-                message: "No message provided"
-            });
-        }
+        // Process PDF
+        const pdfData = await pdf(pdfFile.buffer);
+        const pdfText = pdfData.text.substring(0, 30000); // Truncate to avoid token limits
 
-        // File handling
-        const pdfFile = req.file;
-        const filePath = path.join(uploadDir, pdfFile.filename || `${Date.now()}-${pdfFile.originalname}`);
-
-        // Read and parse PDF
-        const dataBuffer = fs.readFileSync(filePath);
-        const pdfData = await pdf(dataBuffer);
-        const pdfText = pdfData.text;
-
-        // Truncate text if too long
-        const truncatedText = pdfText.length > 30000 
-            ? pdfText.substring(0, 30000) + "... [content truncated]" 
-            : pdfText;
-
-        // Parse chat history if provided
-        let parsedHistory = [];
-        try {
-            parsedHistory = chatHistory ? JSON.parse(chatHistory) : [];
-        } catch (e) {
-            console.warn("Invalid chat history format", e);
-        }
-
-        // Prepare messages for Gemini
+        // Prepare messages array
         const messages = [
             {
                 role: "system",
                 content: `You are a helpful PDF assistant. Analyze this PDF content and answer questions:
                 
-                ${truncatedText}`
+                ${pdfText}`
             },
-            ...parsedHistory,
+            ...(Array.isArray(chatHistory) ? chatHistory : []), // Ensure chatHistory is an array
             {
                 role: "user",
                 content: message
@@ -614,8 +518,8 @@ export const chatWithPDF = async (req, res) => {
         // Call Gemini API
         const response = await AI.chat.completions.create({
             model: "gemini-1.5-flash",
-            messages: messages,
-            temperature: 0.3
+            messages,
+            temperature: 0.3,
         });
 
         const aiResponse = response.choices[0].message.content;
@@ -626,76 +530,88 @@ export const chatWithPDF = async (req, res) => {
             VALUES (${userId}, ${pdfFile.originalname}, ${message}, ${aiResponse})
         `;
 
-        // Clean up
-        fs.unlinkSync(filePath);
-
         res.json({
             success: true,
             response: aiResponse,
             chatHistory: [
-                ...parsedHistory,
+                ...(Array.isArray(chatHistory) ? chatHistory : []),
                 { role: "user", content: message },
                 { role: "assistant", content: aiResponse }
             ]
         });
 
     } catch (error) {
-        console.error("PDF chat error:", error);
-        
-        // Clean up file if error occurred
-        if (req.file?.filename) {
-            const filePath = path.join(uploadDir, req.file.filename);
-            fs.unlinkSync(filePath).catch(() => {});
+        console.error("PDF chat error:", {
+            message: error.message,
+            stack: error.stack,
+            request: {
+                file: req.file?.originalname,
+                message: req.body.message,
+                chatHistory: req.body.chatHistory
+            }
+        });
+
+        // More specific error messages
+        let userMessage = "PDF processing failed";
+        if (error.status === 400) {
+            userMessage = "Invalid request to AI service - please check your input";
+        } else if (error.message.includes("Unexpected token")) {
+            userMessage = "Invalid PDF content";
         }
 
         res.status(500).json({
             success: false,
-            message: error.message.includes("Unexpected token") 
-                ? "Invalid PDF file content" 
-                : error.message || "Failed to process PDF chat request"
+            message: userMessage,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };
 
+// ==================== CHAT HISTORY ====================
 export const getPDFChatHistory = async (req, res) => {
     try {
         const { userId } = req.auth();
         const { file_name } = req.query;
 
         if (!file_name) {
-            return res.status(400).json({
-                success: false,
-                message: "File name is required"
+            // If no file_name provided, return list of available files
+            const files = await sql`
+                SELECT file_name 
+                FROM pdf_chats 
+                WHERE user_id = ${userId}
+                GROUP BY file_name
+                ORDER BY MAX(created_at) DESC
+            `;
+            return res.json({ 
+                success: true, 
+                files: files.map(f => f.file_name) 
             });
         }
 
+        // If file_name provided, return messages for that file
         const history = await sql`
-            SELECT user_message, ai_response, created_at 
+            SELECT user_message, ai_response, created_at, file_name
             FROM pdf_chats 
-            WHERE user_id = ${userId} 
-            AND file_name = ${file_name}
+            WHERE user_id = ${userId} AND file_name = ${file_name}
             ORDER BY created_at ASC
         `;
 
-        // Format as conversation history
-        const chatHistory = [];
-        history.forEach(entry => {
-            chatHistory.push(
-                { role: "user", content: entry.user_message },
-                { role: "assistant", content: entry.ai_response }
-            );
-        });
+        const chatHistory = history.flatMap(entry => [
+            { role: "user", content: entry.user_message },
+            { role: "assistant", content: entry.ai_response }
+        ]);
 
-        res.json({
-            success: true,
-            chatHistory
+        res.json({ 
+            success: true, 
+            chatHistory,
+            fileName: file_name 
         });
 
     } catch (error) {
         console.error("Chat history error:", error);
         res.status(500).json({
             success: false,
-            message: "Failed to retrieve chat history"
+            message: "Failed to retrieve history"
         });
     }
 };
