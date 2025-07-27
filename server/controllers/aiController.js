@@ -7,6 +7,11 @@ import OpenAI from "openai";
 import sql from "../configs/db.js";
 import fs from "fs"
 import pdf from "pdf-parse/lib/pdf-parse.js"
+import path from 'path';
+
+
+// Configure upload directory
+const uploadDir = path.join(process.cwd(), 'uploads');
 
 // Create an instance of OpenAI with your Gemini API key and baseURL
 const AI = new OpenAI({
@@ -537,3 +542,160 @@ export const calculateATSScore = async (req, res) => {
         });
     }
 }
+
+export const chatWithPDF = async (req, res) => {
+    try {
+        // Authentication and premium check
+        const { userId } = req.auth();
+        const plan = req.plan;
+        
+        if (plan !== 'premium') {
+            return res.status(403).json({
+                success: false,
+                message: "PDF chat feature requires a premium subscription"
+            });
+        }
+
+        // Validate request
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "No PDF file uploaded"
+            });
+        }
+
+        // Parse additional form data
+        const { message, chatHistory } = req.body;
+        
+        if (!message) {
+            return res.status(400).json({
+                success: false,
+                message: "No message provided"
+            });
+        }
+
+        // File handling
+        const pdfFile = req.file;
+        const filePath = path.join(uploadDir, pdfFile.filename || `${Date.now()}-${pdfFile.originalname}`);
+
+        // Read and parse PDF
+        const dataBuffer = fs.readFileSync(filePath);
+        const pdfData = await pdf(dataBuffer);
+        const pdfText = pdfData.text;
+
+        // Truncate text if too long
+        const truncatedText = pdfText.length > 30000 
+            ? pdfText.substring(0, 30000) + "... [content truncated]" 
+            : pdfText;
+
+        // Parse chat history if provided
+        let parsedHistory = [];
+        try {
+            parsedHistory = chatHistory ? JSON.parse(chatHistory) : [];
+        } catch (e) {
+            console.warn("Invalid chat history format", e);
+        }
+
+        // Prepare messages for Gemini
+        const messages = [
+            {
+                role: "system",
+                content: `You are a helpful PDF assistant. Analyze this PDF content and answer questions:
+                
+                ${truncatedText}`
+            },
+            ...parsedHistory,
+            {
+                role: "user",
+                content: message
+            }
+        ];
+
+        // Call Gemini API
+        const response = await AI.chat.completions.create({
+            model: "gemini-1.5-flash",
+            messages: messages,
+            temperature: 0.3
+        });
+
+        const aiResponse = response.choices[0].message.content;
+
+        // Store interaction
+        await sql`
+            INSERT INTO pdf_chats (user_id, file_name, user_message, ai_response)
+            VALUES (${userId}, ${pdfFile.originalname}, ${message}, ${aiResponse})
+        `;
+
+        // Clean up
+        fs.unlinkSync(filePath);
+
+        res.json({
+            success: true,
+            response: aiResponse,
+            chatHistory: [
+                ...parsedHistory,
+                { role: "user", content: message },
+                { role: "assistant", content: aiResponse }
+            ]
+        });
+
+    } catch (error) {
+        console.error("PDF chat error:", error);
+        
+        // Clean up file if error occurred
+        if (req.file?.filename) {
+            const filePath = path.join(uploadDir, req.file.filename);
+            fs.unlinkSync(filePath).catch(() => {});
+        }
+
+        res.status(500).json({
+            success: false,
+            message: error.message.includes("Unexpected token") 
+                ? "Invalid PDF file content" 
+                : error.message || "Failed to process PDF chat request"
+        });
+    }
+};
+
+export const getPDFChatHistory = async (req, res) => {
+    try {
+        const { userId } = req.auth();
+        const { file_name } = req.query;
+
+        if (!file_name) {
+            return res.status(400).json({
+                success: false,
+                message: "File name is required"
+            });
+        }
+
+        const history = await sql`
+            SELECT user_message, ai_response, created_at 
+            FROM pdf_chats 
+            WHERE user_id = ${userId} 
+            AND file_name = ${file_name}
+            ORDER BY created_at ASC
+        `;
+
+        // Format as conversation history
+        const chatHistory = [];
+        history.forEach(entry => {
+            chatHistory.push(
+                { role: "user", content: entry.user_message },
+                { role: "assistant", content: entry.ai_response }
+            );
+        });
+
+        res.json({
+            success: true,
+            chatHistory
+        });
+
+    } catch (error) {
+        console.error("Chat history error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to retrieve chat history"
+        });
+    }
+};

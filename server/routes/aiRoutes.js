@@ -1,6 +1,6 @@
 import express from "express"
 import { auth } from "../middlewares/auth.js"
-import { calculateATSScore, generateArticle, generateBlobTitle, generateImage, humanizeText, removeImageBackground, removeImageObject, resumeReview } from "../controllers/aiController.js"
+import { calculateATSScore, chatWithPDF, generateArticle, generateBlobTitle, generateImage, getPDFChatHistory, humanizeText, removeImageBackground, removeImageObject, resumeReview } from "../controllers/aiController.js"
 import { upload } from "../configs/multer.js"
 
 const aiRouter = express.Router()
@@ -15,5 +15,9 @@ aiRouter.post('/remove-image-object',upload.single('image'),auth,removeImageObje
 
 aiRouter.post('/resume-review',upload.single('resume'),auth,resumeReview)
 aiRouter.post('/calculate-ats-score',upload.single('resume'),auth,calculateATSScore)
+
+aiRouter.post('/chat-with-pdf', upload.single('pdf'), auth, chatWithPDF)
+aiRouter.get('/pdf-chat-history', auth, getPDFChatHistory)
+
 
 export default aiRouter 

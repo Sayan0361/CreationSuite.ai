@@ -15,13 +15,14 @@ import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import CalculateATSScore from './pages/CalculateATSScore'
 import HumanizeText from './pages/HumanizeText'
+import ChatWithPDF from './pages/ChatWithPDF'
 
 const App = () => {
   // api testing
-  const {getToken} = useAuth()
-  useEffect(()=>{
-    getToken().then((token)=>console.log(token))
-  },[])
+  // const {getToken} = useAuth()
+  // useEffect(()=>{
+  //   getToken().then((token)=>console.log(token))
+  // },[])
   return (
       <div>
         <Toaster/>
@@ -37,6 +38,7 @@ const App = () => {
             <Route path='remove-object' element={<RemoveObject/>} />
             <Route path='review-resume' element={<ReviewResume/>} />
             <Route path='calculate-ats-score' element={<CalculateATSScore/>} />
+            <Route path='chat-with-pdf' element={<ChatWithPDF/>} />
             <Route path='community' element={<Community/>} />
           </Route>
         </Routes>
