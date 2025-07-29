@@ -11,12 +11,15 @@ const Navbar = () => {
 
   return (
     <div className='fixed z-50 w-full backdrop-blur-xl flex justify-between items-center py-3 px-4 sm:px-20 xl:px-32 bg-zinc-900/80 border-b border-zinc-700'>
-      <img 
-        src={assets.logo} 
-        alt="logo" 
-        className='w-32 sm:w-44 cursor-pointer hover:opacity-90 transition-opacity' 
-        onClick={()=>navigate('/')}
-      />
+      <div 
+        onClick={() => navigate('/')}
+        className="cursor-pointer hover:opacity-90 transition-opacity"
+      >
+        <h1 className="text-2xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
+          Creation<span className="text-white">Suite</span>
+          <span className="text-xs align-top ml-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full">.ai</span>
+        </h1>
+      </div>
       {
         user ? 
         <div className='bg-zinc-800 p-1 rounded-full border border-zinc-700'>

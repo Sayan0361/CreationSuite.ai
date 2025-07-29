@@ -13,12 +13,12 @@ const Home = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar/>
       <main className="flex-grow">
-        <Hero/>
-        <AiTools/>
-        <HowItWorks/>
-        <Testimonial />
-        <Plan/>
-        <FAQ/>
+        <Hero id="Hero"/>
+        <AiTools id="AiTools"/>
+        <HowItWorks id="How It Works"/>
+        <Testimonial id="Testimonial" />
+        <Plan id="Plan"/>
+        <FAQ id="FAQ"/>
       </main>
       <Footer/>
     </div>

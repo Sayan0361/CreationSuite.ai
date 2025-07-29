@@ -44,6 +44,20 @@ export const AiToolsData = [
         path: '/ai/humanize-text'
     },
     {
+        title: 'Resume Reviewer',
+        description: 'Get your resume reviewed by AI to improve your chances of landing your dream job.',
+        Icon: FileText,
+        bg: { from: '#12B7AC', to: '#08B6CE' },
+        path: '/ai/review-resume'
+    },
+    {
+        title: 'ATS Score Calculator',
+        description: 'Analyze how well your resume performs against Applicant Tracking Systems.',
+        Icon: BarChart2,
+        bg: { from: '#8E44AD', to: '#9B59B6' },
+        path: '/ai/calculate-ats-score'
+    },
+    {
         title: 'AI Art Generator',
         description: 'Transform your ideas into breathtaking visuals with our AI-powered art generator.',
         Icon: Image,
@@ -63,20 +77,6 @@ export const AiToolsData = [
         Icon: Scissors,
         bg: { from: '#5C6AF1', to: '#427DF5' },
         path: '/ai/remove-object'
-    },
-    {
-        title: 'Resume Reviewer',
-        description: 'Get your resume reviewed by AI to improve your chances of landing your dream job.',
-        Icon: FileText,
-        bg: { from: '#12B7AC', to: '#08B6CE' },
-        path: '/ai/review-resume'
-    },
-    {
-        title: 'ATS Score Calculator',
-        description: 'Analyze how well your resume performs against Applicant Tracking Systems.',
-        Icon: BarChart2,
-        bg: { from: '#8E44AD', to: '#9B59B6' },
-        path: '/ai/calculate-ats-score'
     },
     {
         title: 'Chat With PDF',

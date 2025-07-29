@@ -14,7 +14,15 @@ const Layout = () => {
     <div className='flex flex-col items-start justify-start h-screen bg-zinc-950'>
 
       <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-800 bg-zinc-950'>
-        <img className='cursor-pointer w-32 sm:w-44' src={assets.logo} alt="" onClick={()=>navigate('/')} />
+        <div 
+          onClick={() => navigate('/')}
+          className="cursor-pointer hover:opacity-90 transition-opacity"
+        >
+          <h1 className="text-2xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
+            Creation<span className="text-white">Suite</span>
+            <span className="text-xs align-top ml-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full">.ai</span>
+          </h1>
+        </div>
         {  /* Sidebar-Hamburger Menu for mobile devices */
           sidebar ? <X onClick={()=> setSidebar(false)} className='w-6 h-6 text-gray-400 sm:hidden'/>
           : <Menu onClick={()=> setSidebar(true)} className='w-6 h-6 text-gray-400 sm:hidden'/>

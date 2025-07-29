@@ -33,7 +33,7 @@ export const generateArticle = async (req, res) => {
         const free_usage = req.free_usage;
 
         // Check if the user is on the free plan AND has already used the free quota
-        if (plan !== 'premium' && free_usage >= 10) {
+        if (plan !== 'premium' && free_usage >= 30) {
             return res.json({
                 success: false,
                 message: "Limit reached. Please upgrade to continue."
@@ -100,7 +100,7 @@ export const generateBlobTitle = async (req, res) => {
         const free_usage = req.free_usage;
 
         // Check if the user is on the free plan AND has already used the free quota
-        if (plan !== 'premium' && free_usage >= 10) {
+        if (plan !== 'premium' && free_usage >= 30) {
             return res.json({
                 success: false,
                 message: "Limit reached. Please upgrade to continue."
@@ -178,7 +178,7 @@ export const humanizeText = async (req, res) => {
         }
 
         // Check free tier limits
-        if (plan !== 'premium' && free_usage >= 10) {
+        if (plan !== 'premium' && free_usage >= 30) {
             return res.json({
                 success: false,
                 message: "Limit reached. Please upgrade to continue."
@@ -370,11 +370,12 @@ export const resumeReview = async (req, res) => {
         const { userId } = req.auth();
         const resume = req.file; // From memoryStorage
         const plan = req.plan;
+        const free_usage = req.free_usage;
 
-        if (plan !== 'premium') {
+        if (plan !== 'premium' && free_usage >= 30) {
             return res.json({
                 success: false,
-                message: "This feature is only available for premium subscriptions"
+                message: "Limit reached. Please upgrade to continue."
             });
         }
 
@@ -394,6 +395,15 @@ export const resumeReview = async (req, res) => {
             INSERT INTO creations(user_id, prompt, content, type)
             VALUES (${userId}, 'Resume Review', ${content}, 'resume-review')
         `;
+
+        // Update free usage count for free tier users
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: {
+                    free_usage: free_usage + 1
+                }
+            });
+        }
 
         res.json({
             success: true,
@@ -415,11 +425,12 @@ export const calculateATSScore = async (req, res) => {
         const resume = req.file; // From memoryStorage
         const { jobDescription } = req.body;
         const plan = req.plan;
+        const free_usage = req.free_usage;
 
-        if (plan !== 'premium') {
+        if (plan !== 'premium' && free_usage >= 30) {
             return res.json({
                 success: false,
-                message: "This feature is only available for premium subscriptions"
+                message: "Limit reached. Please upgrade to continue."
             });
         }
 
@@ -459,6 +470,15 @@ export const calculateATSScore = async (req, res) => {
             VALUES (${userId}, ${`ATS Score for ${resume.originalname}`}, ${JSON.stringify(result)}, 'ats-score')
         `;
 
+        // Update free usage count for free tier users
+        if (plan !== 'premium') {
+            await clerkClient.users.updateUserMetadata(userId, {
+                privateMetadata: {
+                    free_usage: free_usage + 1
+                }
+            });
+        }
+        
         res.json({
             success: true,
             content: result

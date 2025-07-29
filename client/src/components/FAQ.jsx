@@ -10,57 +10,57 @@ const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null)
 
 
-  const faqs = [
-    {
-      question: "What types of content can I create with these tools?",
-      answer: "Our platform leverages Gemini and ClickDrop APIs to provide content generation, image editing, PDF analysis, and text optimization across both free and premium plans."
-    },
-    {
-      question: "How accurate are the AI-generated results?",
-      answer: "While we use advanced AI models (Gemini and ClickDrop), outputs may not be 100% accurate. We recommend reviewing all AI-generated content before use, especially for professional or important applications."
-    },
-    {
-      question: "Do I need technical skills to use these tools?",
-      answer: "No technical skills required! Our tools are designed with simple, intuitive interfaces for all users."
-    },
-    {
-      question: "How does the pricing work?",
-      answer: (
-        <div>
-          <p className="mb-2"><strong>Free Tier (10 credits/month):</strong></p>
-          <ul className="list-disc pl-5 mb-4 space-y-1">
-            <li>AI Content Generator</li>
-            <li>Title Suggestor</li>
-            <li>Text Humanizer</li>
-            <li>Basic AI Assistant</li>
-          </ul>
-          <p className="mb-2"><strong>Premium Plan:</strong></p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Image Generator (via ClickDrop API)</li>
-            <li>Remove Image Background</li>
-            <li>Remove Object from Image</li>
-            <li>Review Resume</li>
-            <li>Calculate ATS Score</li>
-            <li>ChatWithPDF (via Gemini API)</li>
-            <li>Unlimited credits</li>
-            <li>Priority processing</li>
-          </ul>
-        </div>
-      )
-    },
-    {
-      question: "Is my data secure with your platform?",
-      answer: "We implement strong security measures including encryption, though please note some processing occurs through third-party APIs (Gemini and ClickDrop) that have their own security policies."
-    },
-    {
-      question: "What happens if I use all my free credits?",
-      answer: "Free users receive 10 credits monthly. When exhausted, you can upgrade to premium for unlimited access or wait for your credits to reset the following month."
-    },
-    {
-      question: "Which third-party services do you integrate with?",
-      answer: "Our platform currently integrates with Google's Gemini API for text-based features and ClickDrop API for image-related functionalities. We may add more integrations in the future."
-    }
-  ]
+const faqs = [
+  {
+    question: "What types of content can I create with these tools?",
+    answer:
+      "Our platform uses advanced APIs like Google's Gemini and ClickDrop to offer content generation, image editing, PDF analysis, and text enhancement across both free and premium plans."
+  },
+  {
+    question: "How accurate are the AI-generated results?",
+    answer:
+      "While our platform uses powerful AI models (Gemini and ClickDrop), outputs may not always be 100% accurate. We recommend reviewing all AI-generated content before using it in professional or important settings."
+  },
+  {
+    question: "Do I need technical skills to use these tools?",
+    answer:
+      "Not at all! Our tools are designed with intuitive, user-friendly interfaces suitable for everyone, regardless of technical background."
+  },
+  {
+    question: "How does the pricing work?",
+    answer:
+      `Free Tier (30 credits/month):
+      - AI Content Generator
+      - Title Suggestor
+      - Text Humanizer
+      - Resume Review
+      - Calculate ATS Score
+
+      Premium Plan:
+      - Image Generator (via ClickDrop)
+      - Remove Image Background
+      - Remove Object from Image
+      - ChatWithPDF (via Gemini)
+      - Unlimited credits
+      - Priority processing`
+  },
+  {
+    question: "Is my data secure with your platform?",
+    answer:
+      "We implement strong security measures including encryption. However, some processing happens through third-party APIs like Gemini and ClickDrop, which follow their own security practices."
+  },
+  {
+    question: "What happens if I use all my free credits?",
+    answer:
+      "Free users receive 30 credits each month. Once these are used up, you can either wait until the next month for renewal or upgrade to the premium plan for unlimited access."
+  },
+  {
+    question: "Which third-party services do you integrate with?",
+    answer:
+      "Currently, we integrate with Google's Gemini API for text-based features and ClickDrop for image-related functionality. We plan to expand our integrations in the future."
+  }
+];
+
   useEffect(() => {
     // GSAP animation setup
     const script = document.createElement('script')
