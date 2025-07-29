@@ -1,8 +1,6 @@
 # CreationSuite.ai - AI-Powered Content Creation Platform
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-CreationSuite.ai-brightgreen?style=for-the-badge&logo=vercel)](https://creation-suite-ai.vercel.app/)
-![GitHub last commit](https://img.shields.io/github/last-commit/Sayan0361/CreationSuite.ai)
-![GitHub license](https://img.shields.io/github/license/Sayan0361/CreationSuite.ai)
 
 CreationSuite.ai is a comprehensive AI-powered platform that offers various content creation and enhancement tools, from article generation to resume optimization and AI art creation.
 
