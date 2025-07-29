@@ -1,50 +1,52 @@
-# CreationSuite.ai - AI-Powered Content Creation Platform
+# CreationSuite.ai - AI-Powered SaaS Platform
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-CreationSuite.ai-brightgreen?style=for-the-badge&logo=vercel)](https://creation-suite-ai.vercel.app/)
 
-CreationSuite.ai is a comprehensive AI-powered platform that offers various content creation and enhancement tools, from article generation to resume optimization and AI art creation.
+CreationSuite.ai is a SaaS platform offering AI-powered content creation tools with a freemium model. Experience powerful AI tools for content generation, resume optimization, and creative design.
 
-## 🚀 Key Features
+## 🚀 Feature Tiers
 
-<div align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=CreationSuite+Dashboard+Preview" alt="Dashboard Preview">
-</div>
+### 🆓 Free Tier (No Subscription Required)
+| Feature | Description | Path |
+|---------|-------------|------|
+| **AI Content Generator** | Create well-researched articles on any topic | `/ai/write-article` |
+| **Blog Title Suggester** | Generate engaging blog post titles | `/ai/blog-titles` |
+| **Text Humanizer** | Make AI text sound natural and human-like | `/ai/humanize-text` |
+| **Resume Reviewer** | Get AI-powered feedback on your resume | `/ai/review-resume` |
+| **ATS Score Calculator** | Check resume performance in tracking systems | `/ai/calculate-ats-score` |
 
-### ✨ AI Content Tools
+### 💎 Premium Tier (Subscription Required)
+| Feature | Description | Path |
+|---------|-------------|------|
+| **AI Art Generator** | Create stunning visuals from text prompts | `/ai/generate-images` |
+| **Background Eraser** | Automatically remove image backgrounds | `/ai/remove-background` |
+| **Object Eraser** | Remove unwanted objects from images | `/ai/remove-object` |
+| **Chat With PDF** | Analyze and interact with PDF documents | `/ai/chat-with-pdf` |
 
-| Feature | Description | Path | Status |
-|---------|-------------|------|--------|
-| **AI Content Generator** | Create well-researched articles on any topic | `/ai/write-article` | ✅ Live |
-| **Blog Title Suggester** | Generate engaging blog post titles | `/ai/blog-titles` | ✅ Live |
-| **Text Humanizer** | Make AI text sound natural and human-like | `/ai/humanize-text` | ✅ Live |
-| **Resume Reviewer** | Get AI-powered feedback on your resume | `/ai/review-resume` | ✅ Live |
-| **ATS Score Calculator** | Check how well your resume performs in tracking systems | `/ai/calculate-ats-score` | ✅ Live |
-| **AI Art Generator** | Create stunning visuals from text prompts | `/ai/generate-images` | ✅ Live |
-| **Background Eraser** | Automatically remove image backgrounds | `/ai/remove-background` | ✅ Live |
-| **Object Eraser** | Remove unwanted objects from images | `/ai/remove-object` | ✅ Live |
-| **Chat With PDF** | Analyze and interact with PDF documents | `/ai/chat-with-pdf` | ✅ Live |
-
-## 🛠️ Technology Stack
+## 🛠️ Core Technology
 
 ### Frontend
-- **React.js** (Vite) - Frontend framework
-- **Tailwind CSS** - Utility-first CSS framework
-- **Clerk** - Authentication and user management
-- **Axios** - HTTP client for API calls
-- **React Router** - Client-side routing
+- **React.js** (Vite) - Modern frontend framework
+- **Tailwind CSS** - Utility-first styling
+- **Clerk** - Secure authentication
+- **Axios** - API communication
 
-### Backend
-- **Node.js** (ES Modules) - JavaScript runtime
-- **Express.js** - Web application framework
-- **PostgreSQL** (via Neon) - Relational database
-- **Cloudinary** - Image processing and storage
-- **PDF-parse** - PDF text extraction
+### Backend Services
+- **Node.js/Express** - Robust API server
+- **PostgreSQL** - Relational database (Neon)
+- **Cloudinary** - Image processing pipeline
 
-### AI Services
-- **Google Gemini API** - Powers all text generation features
-- **Clipdrop API** - Handles AI image generation and editing
+### AI Integrations
+- **Google Gemini API** - Powers text generation
+- **Clipdrop API** - Handles image generation/editing
 
 ### Infrastructure
-- **Vercel** - Frontend hosting and deployment
-- **Neon** - Serverless PostgreSQL database
-- **Cloudinary** - Image management CDN
+- **Vercel** - Frontend hosting
+- **Neon** - Serverless PostgreSQL
+- **Cloudinary** - Image CDN
+
+---
+
+<div align="center">
+  <p>Experience the future of content creation at <a href="https://creation-suite-ai.vercel.app/" target="_blank">CreationSuite.ai</a> ✨</p>
+</div>
