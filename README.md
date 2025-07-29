@@ -1,6 +1,5 @@
 # CreationSuite.ai - AI-Powered Content Creation Platform
 
-![CreationSuite Banner](https://via.placeholder.com/1200x400?text=CreationSuite.ai+Banner)
 
 ## 🚀 Features
 
