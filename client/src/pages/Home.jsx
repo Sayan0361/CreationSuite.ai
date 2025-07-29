@@ -5,7 +5,7 @@ import AiTools from '../components/AiTools'
 import Testimonial from '../components/Testimonial'
 import Plan from '../components/Plan'
 import Footer from '../components/Footer'
-import FAQ from '../components/Faq'
+import FAQ from '../components/FAQ'
 import HowItWorks from '../components/HowItWorks'
 
 const Home = () => {
