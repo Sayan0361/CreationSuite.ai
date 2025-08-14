@@ -37,10 +37,11 @@ const Navbar = () => {
         (
           <button 
             onClick={openSignIn} 
-            className="flex items-center gap-2 rounded-full text-sm cursor-pointer 
+            className="flex items-center justify-center gap-2 rounded-full text-sm cursor-pointer 
             bg-gradient-to-r from-blue-600 to-indigo-600 
-            text-white px-10 py-2.5 hover:from-blue-700 hover:to-indigo-700 
-            transition duration-300 ease-in-out shadow-lg hover:shadow-blue-500/20"
+            text-white px-6 py-2 sm:px-10 sm:py-2.5 hover:from-blue-700 hover:to-indigo-700 
+            transition duration-300 ease-in-out shadow-lg hover:shadow-blue-500/20
+            w-fit min-w-32 sm:w-auto"
           >
             Get Started <ArrowRight className="w-4 h-4" />
           </button>
