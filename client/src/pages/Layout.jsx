@@ -1,6 +1,6 @@
+// Layout.jsx
 import React, { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { assets } from '../assets/assets'
 import { Menu, X } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
 import { SignIn, useUser } from '@clerk/clerk-react'
@@ -11,9 +11,9 @@ const Layout = () => {
   const { user } = useUser()
 
   return user ? (
-    <div className='flex flex-col items-start justify-start h-screen bg-zinc-950'>
-
-      <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-800 bg-zinc-950'>
+    <div className='fixed inset-0 flex flex-col bg-zinc-950 overflow-hidden'>
+      {/* Navbar - fixed height */}
+      <nav className='w-full h-16 px-8 flex items-center justify-between border-b border-gray-800 bg-zinc-950 flex-shrink-0'>
         <div 
           onClick={() => navigate('/')}
           className="cursor-pointer hover:opacity-90 transition-opacity"
@@ -23,34 +23,40 @@ const Layout = () => {
             <span className="text-xs align-top ml-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full">.ai</span>
           </h1>
         </div>
-        {  /* Sidebar-Hamburger Menu for mobile devices */
-          sidebar ? <X onClick={()=> setSidebar(false)} className='w-6 h-6 text-gray-400 sm:hidden'/>
-          : <Menu onClick={()=> setSidebar(true)} className='w-6 h-6 text-gray-400 sm:hidden'/>
-        }
+        {sidebar ? (
+          <X 
+            onClick={() => setSidebar(false)} 
+            className='w-6 h-6 text-gray-400 sm:hidden cursor-pointer'
+          />
+        ) : (
+          <Menu 
+            onClick={() => setSidebar(true)} 
+            className='w-6 h-6 text-gray-400 sm:hidden cursor-pointer'
+          />
+        )}
       </nav>
 
-      <div className='flex-1 w-full flex h-[calc(100vh-64px)]'>
-          <Sidebar sidebar={sidebar} setSidebar={setSidebar}/>
-          <div className='flex-1 bg-zinc-950 text-gray-500 overflow-y-auto'>
-            <Outlet />
-          </div>
+      {/* Main content area*/}
+      <div className='flex-1 flex overflow-hidden'>
+        <Sidebar sidebar={sidebar} setSidebar={setSidebar}/>
+        {/* Content container with scroll */}
+        <div className='flex-1 bg-zinc-950 text-gray-500 overflow-auto'>
+          <Outlet />
+        </div>
       </div>
-
     </div>
-  ) : 
-  ( 
-    // user is not loggedIn
-    <div className='flex items-center justify-center h-screen bg-zinc-950'>
-      <div className='bg-zinc-900 p-8 rounded-lg'>
+  ) : (
+    <div className='fixed inset-0 flex items-center justify-center bg-zinc-950 overflow-auto'>
+      <div className='bg-zinc-900 p-8 rounded-lg m-4'>
         <SignIn appearance={{
           baseTheme: 'dark',
           variables: {
-            colorBackground: '#09090b', // zinc-950
+            colorBackground: '#09090b',
             colorText: 'white'
           },
           elements: {
             card: {
-              backgroundColor: '#18181b' // zinc-800
+              backgroundColor: '#18181b'
             }
           }
         }} />

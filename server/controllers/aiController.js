@@ -422,7 +422,7 @@ export const resumeReview = async (req, res) => {
 export const calculateATSScore = async (req, res) => {
     try {
         const { userId } = req.auth();
-        const resume = req.file; // From memoryStorage
+        const resume = req.file; 
         const { jobDescription } = req.body;
         const plan = req.plan;
         const free_usage = req.free_usage;
@@ -434,49 +434,94 @@ export const calculateATSScore = async (req, res) => {
             });
         }
 
-        // Process PDF directly from buffer
+        if (!resume || !jobDescription) {
+            return res.json({
+                success: false,
+                message: "Resume and job description are required"
+            });
+        }
+
         const pdfData = await pdf(resume.buffer);
         const resumeText = pdfData.text;
 
+        // More specific prompt to ensure consistent response format
         const prompt = `
-        Analyze this resume against the job description and return an ATS score (0-100) in JSON format:
+        Honestly analyze this resume against the job description and return a detailed ATS analysis in the following EXACT JSON format:
         {
-            "score": number,
-            "breakdown": { ... },
-            "feedback": string,
-            "suggestions": string[]
+            "score": "number between 0-100 representing overall match",
+            "breakdown": {
+                "skills": {
+                    "skill1": {"match": boolean, "importance": "high/medium/low", "feedback": string},
+                    "skill2": {"match": boolean, "importance": "high/medium/low", "feedback": string}
+                },
+                "keywords": {"count": number, "matches": number},
+                "experience": {"match": boolean, "feedback": string}
+            },
+            "feedback": "Overall summary of the match",
+            "suggestions": [
+                "Specific improvement suggestion 1",
+                "Specific improvement suggestion 2"
+            ]
         }
+        
         Job Description: ${jobDescription}
         Resume Content: ${resumeText}
+        
+        IMPORTANT: Return ONLY valid JSON, no additional text or explanations.
         `;
 
         const response = await AI.chat.completions.create({
             model: "gemini-2.0-flash",
             messages: [{ role: "user", content: prompt }],
-            temperature: 0.3
+            temperature: 0.3,
+            response_format: { type: "json_object" } // Ensure JSON response
         });
 
-        // Parse the JSON response
+        // Parse the JSON response more robustly
         let result;
         try {
-            const jsonMatch = response.choices[0].message.content.match(/```json\n([\s\S]*?)\n```/);
-            result = jsonMatch ? JSON.parse(jsonMatch[1]) : JSON.parse(response.choices[0].message.content);
+            const content = response.choices[0].message.content;
+            
+            // Clean the response if it contains markdown code blocks
+            const cleanedContent = content.replace(/```json/g, '').replace(/```/g, '').trim();
+            result = JSON.parse(cleanedContent);
+            
+            // Validate the basic structure
+            if (typeof result.score === 'undefined' || !result.breakdown || !result.feedback) {
+                throw new Error("AI response format invalid");
+            }
+            
+            // Ensure suggestions is an array
+            if (!Array.isArray(result.suggestions)) {
+                result.suggestions = [result.suggestions].filter(Boolean);
+            }
         } catch (e) {
-            throw new Error("Failed to parse ATS score response");
+            console.error("Failed to parse AI response:", e);
+            throw new Error("Failed to process AI response. Please try again.");
         }
 
-        await sql`
-            INSERT INTO creations(user_id, prompt, content, type)
-            VALUES (${userId}, ${`ATS Score for ${resume.originalname}`}, ${JSON.stringify(result)}, 'ats-score')
-        `;
+        // Database insertion with error handling
+        try {
+            await sql`
+                INSERT INTO creations(user_id, prompt, content, type)
+                VALUES (${userId}, ${`ATS Score for ${resume.originalname}`}, ${JSON.stringify(result)}, 'ats-score')
+            `;
+        } catch (dbError) {
+            console.error("Database error:", dbError);
+            // Don't fail the request just because of DB error
+        }
 
         // Update free usage count for free tier users
         if (plan !== 'premium') {
-            await clerkClient.users.updateUserMetadata(userId, {
-                privateMetadata: {
-                    free_usage: free_usage + 1
-                }
-            });
+            try {
+                await clerkClient.users.updateUserMetadata(userId, {
+                    privateMetadata: {
+                        free_usage: free_usage + 1
+                    }
+                });
+            } catch (clerkError) {
+                console.error("Clerk update error:", clerkError);
+            }
         }
         
         res.json({
@@ -485,10 +530,10 @@ export const calculateATSScore = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error.message);
-        res.json({
+        console.error("ATS Score Error:", error.message);
+        res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message || "An error occurred while calculating ATS score"
         });
     }
 }
@@ -518,8 +563,7 @@ export const chatWithPDF = async (req, res) => {
 
         // Process PDF
         const pdfData = await pdf(pdfFile.buffer);
-        const pdfText = pdfData.text.substring(0, 30000); // Truncate to avoid token limits
-
+        const pdfText = pdfData.text.substring(0, 30000); 
         // Prepare messages array
         const messages = [
             {

@@ -1,4 +1,3 @@
-// Gauge.jsx
 import React from 'react';
 
 const Gauge = ({ value }) => {
@@ -21,4 +20,4 @@ const Gauge = ({ value }) => {
     );
 };
 
-export default Gauge;  // Changed to default export
+export default Gauge;  

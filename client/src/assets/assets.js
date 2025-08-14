@@ -30,7 +30,7 @@ export const AiToolsData = [
         path: '/ai/write-article'
     },
     {
-        title: 'Blog Title Suggester',
+        title: 'Title Suggester',
         description: 'Discover captivating, click-worthy titles for your blog content using AI.',
         Icon: Hash,
         bg: { from: '#B153EA', to: '#E549A3' },

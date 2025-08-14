@@ -8,7 +8,6 @@ import Markdown from 'react-markdown';
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 const WriteArticle = () => {
-
   const articleLength = [
     {length: 800, text: 'Short (500-800 words)'},
     {length: 1200, text: 'Medium (800-1200 words)'},
@@ -56,69 +55,95 @@ const WriteArticle = () => {
   };
 
   return (
-    <div className='h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-white'>
-      {/* left col */}
-      <form onSubmit={onSubmitHandler} className='w-full max-w-lg p-4 bg-zinc-900 rounded-lg '>
-          <div className='flex items-center gap-3'>
-            <Sparkles className='w-6 text-[#4A7AFF]'/>
-            <h1 className='text-xl font-semibold'>Article Configuration</h1>
+    <div className='h-full overflow-y-auto p-6 flex flex-col md:flex-row gap-6 text-white'>
+      {/* Input Section */}
+      <form onSubmit={onSubmitHandler} className='w-full md:w-1/2 p-6 bg-zinc-900 rounded-xl border border-zinc-700 shadow-lg'>
+        <div className='flex items-center gap-3 mb-6'>
+          <Sparkles className='w-6 h-6 text-[#4A7AFF]'/>
+          <h1 className='text-xl font-semibold'>Article Configuration</h1>
+        </div>
+        
+        <div className='space-y-6'>
+          <div>
+            <label className='block text-sm font-medium mb-2'>Article Topic</label>
+            <input 
+              onChange={(e)=>setInput(e.target.value)} 
+              value={input} 
+              type="text" 
+              className='w-full p-3 bg-zinc-800 border border-zinc-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all' 
+              placeholder='Write an article on....' 
+              required
+            />
           </div>
-          <p className='mt-6 text-sm font-medium'>Article Topic</p>
 
-          <input onChange={(e)=>setInput(e.target.value)} value={input} type="text" className='w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300' placeholder='The future of artificial intelligence is...' required/>
-
-          <p className='mt-4 text-sm font-medium'>Article Length</p>
-
-          <div className='mt-3 flex gap-3 flex-wrap sm:max-w-9/11'>
-            {articleLength.map((item, index)=>(
-              <span onClick={()=> setSelectedLength(item)} 
-              className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${selectedLength.text === item.text ? 'bg-blue-50 text-blue-700' : 'text-gray-500 border-gray-300'}`} key={index}>{item.text}</span>
-            ) )}
+          <div>
+            <label className='block text-sm font-medium mb-2'>Article Length</label>
+            <div className='flex flex-wrap gap-2'>
+              {articleLength.map((item, index)=>(
+                <button
+                  type="button"
+                  onClick={()=> setSelectedLength(item)} 
+                  className={`px-4 py-2 text-sm rounded-full transition-all ${
+                    selectedLength.text === item.text 
+                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50' 
+                      : 'bg-zinc-800 text-gray-300 border border-zinc-700 hover:border-zinc-500'
+                  }`} 
+                  key={index}
+                >
+                  {item.text}
+                </button>
+              ))}
+            </div>
           </div>
-          <br/>
-          <button disabled={loading} className='w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer'>
+
+          <button 
+            disabled={loading} 
+            className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-3 text-sm rounded-lg transition-all hover:shadow-lg hover:shadow-blue-500/20 ${
+              loading ? 'opacity-80 cursor-not-allowed' : ''
+            }`}
+          >
             {
-              loading ? <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
-              : <Edit className='w-5'/>
+              loading ? <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+              : <Edit className='w-5 h-5'/>
             }
             Generate article
           </button>
+        </div>
       </form>
-      {/* Right col */}
-      <div className='w-full max-w-lg p-4 bg-zinc-900 rounded-lg flex flex-col min-h-96 max-h-[600px]'>
 
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-3'>
-                <Edit className='w-5 h-5 text-[#4A7AFF]' />
-                <h1 className='text-xl font-semibold'>Generated article</h1>
-              </div>
-              {content && (
-                <button 
-                  onClick={copyToClipboard}
-                  className='flex items-center gap-1 text-sm text-gray-300 hover:text-white'
-                  title="Copy article"
-                >
-                  <Copy className='w-4 h-4' />
-                  Copy
-                </button>
-              )}
-            </div>
+      {/* Output Section */}
+      <div className='w-full md:w-1/2 p-6 bg-zinc-900 rounded-xl border border-zinc-700 shadow-lg flex flex-col h-full min-h-[500px] max-h-[calc(100vh-100px)]'>
+        <div className='flex items-center justify-between mb-6'>
+          <div className='flex items-center gap-3'>
+            <Edit className='w-6 h-6 text-[#4A7AFF]' />
+            <h1 className='text-xl font-semibold'>Generated Article</h1>
+          </div>
+          {content && (
+            <button 
+              onClick={copyToClipboard}
+              className='flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-all'
+              title="Copy article"
+            >
+              <Copy className='w-4 h-4' />
+              Copy
+            </button>
+          )}
+        </div>
 
-            {!content ? (
-              <div className='flex-1 flex justify-center items-center'>
-              <div className='text-sm flex flex-col items-center gap-5 text-gray-400'>
-                <Edit className='w-9 h-9' />
-                <p>Enter a topic and click "Generate article" to get started</p>
-              </div>
+        {!content ? (
+          <div className='flex-1 flex flex-col justify-center items-center text-center p-6'>
+            <div className='text-sm flex flex-col items-center gap-4 text-gray-400'>
+              <Edit className='w-10 h-10 opacity-50' />
+              <p>Enter a topic and click "Generate article" to get started</p>
             </div>
-            ) : (
-              <div className='mt-3 h-full overflow-y-scroll text-sm text-white'>
-                <div className='reset-tw'>
-                  <Markdown>{content}</Markdown>
-                </div>
-              </div>
-            )}
-            
+          </div>
+        ) : (
+          <div className='flex-1 overflow-y-auto pr-2'>
+            <div className='reset-tw prose prose-invert max-w-none'>
+              <Markdown>{content}</Markdown>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -1,59 +1,83 @@
 import React from 'react';
-import  Gauge from './Gauge'; // We'll create this component too
+import Gauge from './Gauge'; 
 
 const ATSResult = ({ data }) => {
-    // Ensure data is properly parsed
-    const result = typeof data === 'string' ? JSON.parse(data) : data;
-    
+    // Ensure data exists and has the correct structure
+    if (!data || typeof data !== 'object') {
+        return (
+            <div className="text-red-500 p-4">
+                Invalid results data. Please try again.
+            </div>
+        )
+    }
+
     return (
         <div className='mt-3 space-y-6 overflow-y-auto'>
             {/* Overall Score */}
-            <div className='bg-zinc-800 p-4 rounded-lg'>
-                <div className='flex justify-between items-center mb-4'>
-                    <h3 className='font-medium'>Overall ATS Score</h3>
-                    <span className='text-xl font-bold'>{result.score}/100</span>
+            {'score' in data && (
+                <div className='bg-zinc-800 p-4 rounded-lg'>
+                    <div className='flex justify-between items-center mb-4'>
+                        <h3 className='font-medium'>Overall ATS Score</h3>
+                        <span className='text-xl font-bold'>{data.score}/100</span>
+                    </div>
+                    <Gauge value={data.score} />
                 </div>
-                <Gauge value={result.score} />
-            </div>
+            )}
 
             {/* Score Breakdown */}
-            <div className='bg-zinc-800 p-4 rounded-lg'>
-                <h3 className='font-medium mb-3'>Score Breakdown</h3>
-                <div className='space-y-3'>
-                    {Object.entries(result.breakdown).map(([category, score]) => (
-                        <div key={category} className='flex items-center'>
-                            <div className='w-32 capitalize'>
-                                {category.replace(/_/g, ' ')}:
-                            </div>
-                            <div className='flex-1 bg-zinc-700 rounded-full h-2.5'>
-                                <div 
-                                    className='bg-blue-500 h-2.5 rounded-full' 
-                                    style={{ width: `${score}%` }}
-                                ></div>
-                            </div>
-                            <div className='w-10 text-right ml-2'>
-                                {score}%
-                            </div>
-                        </div>
-                    ))}
+            {data.breakdown && typeof data.breakdown === 'object' && (
+                <div className='bg-zinc-800 p-4 rounded-lg'>
+                    <h3 className='font-medium mb-3'>Skills Analysis</h3>
+                    <div className='space-y-4'>
+                        {Object.entries(data.breakdown).map(([skill, details]) => {
+                            // Handle both simple values and detailed objects
+                            const isDetailed = typeof details === 'object' && details !== null
+                            const matchStatus = isDetailed ? details.match : details
+                            const feedback = isDetailed ? details.feedback : ''
+
+                            return (
+                                <div key={skill} className='bg-zinc-700 p-3 rounded-lg'>
+                                    <div className='flex justify-between items-center'>
+                                        <span className='font-medium capitalize'>{skill.replace(/_/g, ' ')}</span>
+                                        <span className={`px-2 py-1 rounded text-xs ${
+                                            matchStatus ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
+                                        }`}>
+                                            {matchStatus ? 'MATCH' : 'MISSING'}
+                                        </span>
+                                    </div>
+                                    {feedback && (
+                                        <p className='text-sm mt-2 text-zinc-300'>{feedback}</p>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Feedback */}
-            <div className='bg-zinc-800 p-4 rounded-lg'>
-                <h3 className='font-medium mb-2'>Feedback</h3>
-                <p className='text-sm'>{result.feedback}</p>
-            </div>
+            {data.feedback && (
+                <div className='bg-zinc-800 p-4 rounded-lg'>
+                    <h3 className='font-medium mb-2'>Summary Feedback</h3>
+                    <p className='text-sm'>{data.feedback}</p>
+                </div>
+            )}
 
             {/* Suggestions */}
-            <div className='bg-zinc-800 p-4 rounded-lg'>
-                <h3 className='font-medium mb-2'>Improvement Suggestions</h3>
-                <ul className='list-disc list-inside text-sm space-y-1'>
-                    {result.suggestions.map((suggestion, index) => (
-                        <li key={index}>{suggestion}</li>
-                    ))}
-                </ul>
-            </div>
+            {data.suggestions && (
+                <div className='bg-zinc-800 p-4 rounded-lg'>
+                    <h3 className='font-medium mb-2'>Improvement Suggestions</h3>
+                    <ul className='list-disc list-inside text-sm space-y-2'>
+                        {Array.isArray(data.suggestions) ? (
+                            data.suggestions.map((suggestion, index) => (
+                                <li key={index} className='leading-relaxed'>{suggestion}</li>
+                            ))
+                        ) : (
+                            <li>{data.suggestions}</li>
+                        )}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

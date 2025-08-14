@@ -11,7 +11,8 @@ import {
     Users,
     Sparkles, 
     BarChart2, 
-    MessageSquare
+    MessageSquare,
+    Crown
 } from 'lucide-react';
 import React from 'react'
 import { NavLink } from 'react-router-dom';
@@ -19,14 +20,14 @@ import { NavLink } from 'react-router-dom';
 const navItems = [
     {to: '/ai', label: 'Dashboard', Icon: House},
     {to: '/ai/write-article', label: 'Write Article', Icon: SquarePen},
-    {to: '/ai/blog-titles', label: 'Blog Titles', Icon: Hash},
+    {to: '/ai/blog-titles', label: 'Title Generator', Icon: Hash},
     {to: '/ai/humanize-text', label: 'Humanize Text', Icon: Sparkles}, 
     {to: '/ai/review-resume', label: 'Review Resume', Icon: FileText},
     {to: '/ai/calculate-ats-score', label: 'Calculate ATS Score', Icon: BarChart2},
-    {to: '/ai/generate-images', label: 'Generate Images', Icon: Image},
-    {to: '/ai/remove-background', label: 'Remove Background', Icon: Eraser},
-    {to: '/ai/remove-object', label: 'Remove Object', Icon: Scissors},
-    {to: '/ai/chat-with-pdf', label: 'Chat With PDF', Icon: MessageSquare},
+    {to: '/ai/generate-images', label: 'Generate Images', Icon: Image, premium: true},
+    {to: '/ai/remove-background', label: 'Remove Background', Icon: Eraser, premium: true},
+    {to: '/ai/remove-object', label: 'Remove Object', Icon: Scissors, premium: true},
+    {to: '/ai/chat-with-pdf', label: 'Chat With PDF', Icon: MessageSquare, premium: true},
     {to: '/ai/community', label: 'Community', Icon: Users},
 ]
 
@@ -40,7 +41,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
             <img src={user.imageUrl} alt="User avatar" className='w-13 rounded-full mx-auto cursor-pointer border-2 border-zinc-700 hover:border-zinc-600 transition-colors' onClick={openUserProfile}/>
             <h1 className='mt-1 text-center cursor-pointer font-semibold text-white' onClick={openUserProfile}>{user.fullName}</h1>
             <div className='px-6 mt-5 text-sm text-gray-300 font-medium'>
-                {navItems.map(({to, label, Icon})=>(
+                {navItems.map(({to, label, Icon, premium})=>(
                     <NavLink 
                         key={to} 
                         to={to} 
@@ -51,7 +52,12 @@ const Sidebar = ({ sidebar, setSidebar }) => {
                         {({ isActive })=>(
                             <>
                             <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-400'}` } />
-                            <span className={isActive ? 'text-white' : 'text-gray-300'}>{label}</span>
+                            <span className={`flex-1 ${isActive ? 'text-white' : 'text-gray-300'}`}>{label}</span>
+                            {premium && (
+                                <span className="flex items-center gap-1 text-xs bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2 py-0.5 rounded-full">
+                                    <Crown className="w-2 h-3" />
+                                </span>
+                            )}
                             </>
                         )}
                     </NavLink>
@@ -78,4 +84,4 @@ const Sidebar = ({ sidebar, setSidebar }) => {
     )
 }
 
-export default Sidebar
+export default Sidebar;
