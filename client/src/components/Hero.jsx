@@ -2,11 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
 import { AuroraText } from './magicui/aurora-text'
+import { useTheme } from '../context/ThemeContext'
 
 const Hero = () => {
   const navigate = useNavigate()
-  
-  // Refs for GSAP animations
+  const { theme } = useTheme()
   const heroRef = useRef(null)
   const titleRef = useRef(null)
   const subtitleRef = useRef(null)
@@ -302,34 +302,48 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className='px-4 sm:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center bg-zinc-950 min-h-screen overflow-hidden'
+      className={`px-4 sm:px-20 xl:px-32 relative inline-flex flex-col w-full justify-center min-h-screen overflow-hidden ${
+        theme === 'dark' ? 'bg-zinc-950' : 'bg-white'
+      }`}
     >
       
       {/* Enhanced background decorative elements */}
       <div className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none'>
         <div 
           ref={el => bgElementsRef.current[0] = el}
-          className='absolute top-20 left-10 w-40 h-40 rounded-full bg-indigo-900/20 blur-3xl'
+          className={`absolute top-20 left-10 w-40 h-40 rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-indigo-900/20' : 'bg-indigo-100/70'
+          }`}
         ></div>
         <div 
           ref={el => bgElementsRef.current[1] = el}
-          className='absolute bottom-10 right-10 w-60 h-60 rounded-full bg-purple-900/20 blur-3xl'
+          className={`absolute bottom-10 right-10 w-60 h-60 rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-purple-900/20' : 'bg-purple-100/70'
+          }`}
         ></div>
         <div 
           ref={el => bgElementsRef.current[2] = el}
-          className='absolute top-1/2 right-1/4 w-32 h-32 rounded-full bg-indigo-900/10 blur-2xl'
+          className={`absolute top-1/2 right-1/4 w-32 h-32 rounded-full blur-2xl ${
+            theme === 'dark' ? 'bg-indigo-900/10' : 'bg-indigo-100/50'
+          }`}
         ></div>
         <div 
           ref={el => bgElementsRef.current[3] = el}
-          className='absolute top-1/4 left-1/3 w-28 h-28 rounded-full bg-indigo-900/15 blur-xl'
+          className={`absolute top-1/4 left-1/3 w-28 h-28 rounded-full blur-xl ${
+            theme === 'dark' ? 'bg-indigo-900/15' : 'bg-indigo-100/60'
+          }`}
         ></div>
         <div 
           ref={el => bgElementsRef.current[4] = el}
-          className='absolute bottom-1/3 left-1/5 w-36 h-36 rounded-full bg-purple-900/15 blur-2xl'
+          className={`absolute bottom-1/3 left-1/5 w-36 h-36 rounded-full blur-2xl ${
+            theme === 'dark' ? 'bg-purple-900/15' : 'bg-purple-100/60'
+          }`}
         ></div>
         <div 
           ref={el => bgElementsRef.current[5] = el}
-          className='absolute top-10 right-1/3 w-24 h-24 rounded-full bg-indigo-900/20 blur-xl'
+          className={`absolute top-10 right-1/3 w-24 h-24 rounded-full blur-xl ${
+            theme === 'dark' ? 'bg-indigo-900/20' : 'bg-indigo-100/60'
+          }`}
         ></div>
       </div>
       
@@ -337,14 +351,18 @@ const Hero = () => {
         <div className='text-center mb-6 z-10 relative'>
           <h1 
             ref={titleRef}
-            className='text-4xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold mx-auto leading-[1.2] text-white'
+            className={`text-4xl sm:text-5xl md:text-6xl 2xl:text-7xl font-semibold mx-auto leading-[1.2] ${
+              theme === 'dark' ? 'text-white' : 'text-zinc-900'
+            }`}
           >
             Powerful content creation <br/> powered by <span className='font-bold'><AuroraText>AI tools</AuroraText></span>
           </h1>
           
           <p 
             ref={subtitleRef}
-            className='mt-6 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto text-zinc-400 text-sm sm:text-base'
+            className={`mt-6 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto text-sm sm:text-base ${
+              theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+            }`}
           >
           Multiply your creative output with AI that crafts text, generates visuals, and streamlines processes.
           </p>
@@ -362,7 +380,11 @@ const Hero = () => {
           </button>
           
           <button 
-            className='bg-zinc-800 text-white px-8 py-3 rounded-lg border border-zinc-700 cursor-pointer shadow-sm hover:shadow-zinc-700/30 font-medium transition-shadow duration-300 hover:bg-zinc-700'
+            className={`px-8 py-3 rounded-lg border cursor-pointer shadow-sm font-medium transition-shadow duration-300 ${
+              theme === 'dark' 
+                ? 'bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700 hover:shadow-zinc-700/30' 
+                : 'bg-white text-zinc-900 border-zinc-200 hover:bg-zinc-50 hover:shadow-zinc-400/30'
+            }`}
           >
             Watch demo
           </button>
@@ -370,13 +392,16 @@ const Hero = () => {
 
         <div 
           ref={trustBadgeRef}
-          className='flex items-center gap-4 mt-12 mx-auto text-zinc-300 bg-zinc-800/50 backdrop-blur-sm px-6 py-2 rounded-full border border-zinc-700 shadow-sm z-10 relative w-fit cursor-pointer hover:bg-zinc-800/70 transition-colors'
+          className={`flex items-center gap-4 mt-12 mx-auto backdrop-blur-sm px-6 py-2 rounded-full border shadow-sm z-10 relative w-fit cursor-pointer transition-colors ${
+            theme === 'dark' 
+              ? 'text-zinc-300 bg-zinc-800/50 border-zinc-700 hover:bg-zinc-800/70' 
+              : 'text-zinc-700 bg-white/70 border-zinc-200 hover:bg-white/90'
+          }`}
         >
           <img src={assets.user_group} alt="" className='h-8'/> 
           <span className='text-sm font-medium'>Trusted by 10k+ creators</span>
         </div>
       </div>
-      
     </div>
   )
 }

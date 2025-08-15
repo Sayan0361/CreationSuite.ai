@@ -11,12 +11,59 @@ import RemoveObject from './pages/RemoveObject';
 import ReviewResume from './pages/ReviewResume';
 import Community from './pages/Community';
 import { Toaster } from 'react-hot-toast';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, ClerkProvider } from '@clerk/clerk-react';
+import { dark, light } from '@clerk/themes';
 import CalculateATSScore from './pages/CalculateATSScore';
 import HumanizeText from './pages/HumanizeText';
 import ChatWithPDF from './pages/ChatWithPDF';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 
-const App = () => {
+// Clerk wrapper component
+const ClerkThemeWrapper = ({ children, publishableKey }) => {
+  const { theme } = useTheme();
+
+  return (
+    <ClerkProvider
+      publishableKey={publishableKey}
+      appearance={{
+        baseTheme: theme === 'dark' ? dark : light,
+        variables: {
+          colorPrimary: theme === 'dark' ? '#6366f1' : '#4f46e5',
+          colorBackground: theme === 'dark' ? '#09090b' : '#ffffff',
+          colorText: theme === 'dark' ? '#f4f4f5' : '#27272a',
+          colorInputBackground: theme === 'dark' ? '#18181b' : '#ffffff',
+        }
+      }}
+    >
+      {children}
+    </ClerkProvider>
+  );
+};
+
+const Loader = () => {
+  const { theme } = useTheme();
+
+  return (
+    <div className={`fixed inset-0 flex items-center justify-center z-50 ${
+      theme === 'dark' ? 'bg-zinc-950' : 'bg-white'
+    }`}>
+      <div className="flex flex-col items-center">
+        <div className={`w-12 h-12 border-4 rounded-full animate-spin ${
+          theme === 'dark' 
+            ? 'border-t-transparent border-[#4f6cff]' 
+            : 'border-t-transparent border-blue-600'
+        }`}></div>
+        <p className={`mt-4 ${
+          theme === 'dark' ? 'text-white' : 'text-gray-900'
+        }`}>
+          Loading...
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const AppContent = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,14 +75,7 @@ const App = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-zinc-950 z-50">
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-t-transparent border-[#4f6cff] rounded-full animate-spin"></div>
-          <p className="mt-4 text-white">Loading...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
@@ -58,6 +98,16 @@ const App = () => {
         </Route>
       </Routes>
     </div>
+  );
+};
+
+const App = ({ publishableKey }) => {
+  return (
+    <ThemeProvider>
+      <ClerkThemeWrapper publishableKey={publishableKey}>
+        <AppContent />
+      </ClerkThemeWrapper>
+    </ThemeProvider>
   );
 };
 

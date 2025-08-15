@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Gauge = ({ value }) => {
+const Gauge = ({ value, theme }) => {
     const percentage = Math.min(Math.max(value, 0), 100);
     const color = 
         percentage < 40 ? 'text-red-500' :
@@ -8,7 +8,9 @@ const Gauge = ({ value }) => {
         'text-green-500';
 
     return (
-        <div className='relative w-full h-4 bg-zinc-700 rounded-full overflow-hidden'>
+        <div className={`relative w-full h-4 ${
+                theme === 'dark' ? 'bg-white' : 'bg-zinc-900'
+            } rounded-full overflow-hidden`}>
             <div 
                 className={`absolute top-0 left-0 h-full ${color} bg-current rounded-full`}
                 style={{ width: `${percentage}%` }}

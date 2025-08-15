@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import CreationItem from '../components/CreationItem';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useTheme } from '../context/ThemeContext';
 
 const Dashboard = () => {
   const [creations, setCreations] = useState([]);
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const [showAllPdfChats, setShowAllPdfChats] = useState(false);
   const { getToken } = useAuth();
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const getDashboardData = async () => {
     try {
@@ -80,16 +82,24 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='h-full overflow-y-auto p-4 md:p-6'>
+    <div className={`h-full overflow-y-auto p-4 md:p-6 ${
+      theme === 'dark' ? 'bg-zinc-950' : 'bg-gray-50'
+    }`}>
       <div className='max-w-6xl mx-auto'>
         {/* Header */}
         <div className='flex items-center justify-between mb-6'>
-          <h1 className='text-2xl md:text-3xl font-bold text-white'>
+          <h1 className={`text-2xl md:text-3xl font-bold ${
+            theme === 'dark' ? 'text-white' : 'text-gray-900'
+          }`}>
             Dashboard
           </h1>
           <button 
             onClick={getDashboardData}
-            className='text-xs px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-md text-gray-300 transition-colors flex items-center gap-1'
+            className={`text-xs px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+              theme === 'dark' 
+                ? 'bg-zinc-800 hover:bg-zinc-700 text-gray-300' 
+                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+            }`}
           >
             Refresh
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-cw">
@@ -102,9 +112,15 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
           {/* Total Creation Card */}
-          <div className='flex justify-between items-center p-5 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all'>
-            <div className='text-white'>
-              <p className='text-sm text-gray-400 mb-1'>
+          <div className={`flex justify-between items-center p-5 rounded-xl border transition-all ${
+            theme === 'dark' 
+              ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' 
+              : 'bg-white border-gray-200 hover:border-gray-300'
+          }`}>
+            <div className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>
+              <p className={`text-sm mb-1 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              }`}>
                 Total Creations
               </p>
               <h2 className='text-2xl font-semibold'>
@@ -117,9 +133,17 @@ const Dashboard = () => {
           </div>
 
           {/* AI Chats Card */}
-          <div className='flex justify-between items-center p-5 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all'>
-            <div className='text-white'>
-              <p className='text-sm text-gray-400 mb-1'>PDF Chats</p>
+          <div className={`flex justify-between items-center p-5 rounded-xl border transition-all ${
+            theme === 'dark' 
+              ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' 
+              : 'bg-white border-gray-200 hover:border-gray-300'
+          }`}>
+            <div className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>
+              <p className={`text-sm mb-1 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                PDF Chats
+              </p>
               <h2 className='text-2xl font-semibold'>
                 {pdfChats.length}
               </h2>
@@ -130,9 +154,17 @@ const Dashboard = () => {
           </div>
 
           {/* Active Plan Card */}
-          <div className='flex justify-between items-center p-5 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all'>
-            <div className='text-white'>
-              <p className='text-sm text-gray-400 mb-1'>Active Plan</p>
+          <div className={`flex justify-between items-center p-5 rounded-xl border transition-all ${
+            theme === 'dark' 
+              ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' 
+              : 'bg-white border-gray-200 hover:border-gray-300'
+          }`}>
+            <div className={theme === 'dark' ? 'text-white' : 'text-gray-900'}>
+              <p className={`text-sm mb-1 ${
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+              }`}>
+                Active Plan
+              </p>
               <h2 className='text-2xl font-semibold'>
                 <Protect plan='premium' fallback="Free">Premium</Protect>
               </h2>
@@ -146,20 +178,33 @@ const Dashboard = () => {
         {/* Recent Creations Section */}
         <div className='mb-8'>
           <div className='flex items-center justify-between mb-4'>
-            <h2 className='text-xl font-semibold text-white'>Recent Creations</h2>
+            <h2 className={`text-xl font-semibold ${
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>
+              Recent Creations
+            </h2>
             {creations.length > 4 && (
               <button 
                 onClick={toggleAllCreations}
-                className='text-xs px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-md text-gray-300 transition-colors flex items-center gap-1'
+                className={`text-xs px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+                  theme === 'dark' 
+                    ? 'bg-zinc-800 hover:bg-zinc-700 text-gray-300' 
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                }`}
               >
-                {showAllCreations ? 'Show less' : 'View all'} <ChevronRight className={`w-3 h-3 transition-transform ${showAllCreations ? 'rotate-90' : ''}`} />
+                {showAllCreations ? 'Show less' : 'View all'} 
+                <ChevronRight className={`w-3 h-3 transition-transform ${
+                  showAllCreations ? 'rotate-90' : ''
+                }`} />
               </button>
             )}
           </div>
           
           {loading ? (
             <div className="grid place-items-center py-10">
-              <div className="w-8 h-8 rounded-full border-4 border-[#00DA83] border-t-transparent animate-spin"></div>
+              <div className={`w-8 h-8 rounded-full border-4 ${
+                theme === 'dark' ? 'border-[#00DA83]' : 'border-green-500'
+              } border-t-transparent animate-spin`}></div>
             </div>
           ) : creations.length > 0 ? (
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -168,8 +213,12 @@ const Dashboard = () => {
               ))}
             </div>
           ) : (
-            <div className="p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-center">
-              <p className="text-gray-400">No creations found</p>
+            <div className={`p-6 rounded-xl border text-center ${
+              theme === 'dark' 
+                ? 'bg-zinc-900 border-zinc-800 text-gray-400' 
+                : 'bg-white border-gray-200 text-gray-600'
+            }`}>
+              <p>No creations found</p>
               <button
                 onClick={navigateToCreate}
                 className="mt-2 px-4 py-2 bg-[#00DA83] hover:bg-[#00c978] text-white rounded-lg transition-colors"
@@ -183,47 +232,76 @@ const Dashboard = () => {
         {/* PDF Chats Section */}
         <div>
           <div className='flex items-center justify-between mb-4'>
-            <h2 className='text-xl font-semibold text-white'>Recent PDF Chats</h2>
+            <h2 className={`text-xl font-semibold ${
+              theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>
+              Recent PDF Chats
+            </h2>
             {pdfChats.length > 3 && (
               <button 
                 onClick={toggleAllPdfChats}
-                className='text-xs px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-md text-gray-300 transition-colors flex items-center gap-1'
+                className={`text-xs px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${
+                  theme === 'dark' 
+                    ? 'bg-zinc-800 hover:bg-zinc-700 text-gray-300' 
+                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                }`}
               >
-                {showAllPdfChats ? 'Show less' : 'View all'} <ChevronRight className={`w-3 h-3 transition-transform ${showAllPdfChats ? 'rotate-90' : ''}`} />
+                {showAllPdfChats ? 'Show less' : 'View all'} 
+                <ChevronRight className={`w-3 h-3 transition-transform ${
+                  showAllPdfChats ? 'rotate-90' : ''
+                }`} />
               </button>
             )}
           </div>
           
           {loading ? (
             <div className="grid place-items-center py-10">
-              <div className="w-8 h-8 rounded-full border-4 border-[#00DA83] border-t-transparent animate-spin"></div>
+              <div className={`w-8 h-8 rounded-full border-4 ${
+                theme === 'dark' ? 'border-[#00DA83]' : 'border-green-500'
+              } border-t-transparent animate-spin`}></div>
             </div>
           ) : pdfChats.length > 0 ? (
             <div className='space-y-3'>
               {pdfChats.slice(0, showAllPdfChats ? pdfChats.length : 3).map((chat, index) => (
                 <div 
                   key={index} 
-                  className="group p-4 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-zinc-700 text-white transition-all cursor-pointer"
+                  className={`group p-4 rounded-xl border transition-all cursor-pointer ${
+                    theme === 'dark' 
+                      ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700 text-white' 
+                      : 'bg-white border-gray-200 hover:border-gray-300 text-gray-900'
+                  }`}
                   onClick={() => navigate('/ai/chat-with-pdf')}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-100'
+                    }`}>
                       <FileText className="w-5 text-[#00DA83]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-sm md:text-base truncate">{chat.fileName}</h3>
-                      <p className="text-xs md:text-sm text-gray-400 truncate">
+                      <p className={`text-xs md:text-sm truncate ${
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
                         {chat.lastMessage || 'No messages yet'}
                       </p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+                    <ChevronRight className={`w-4 h-4 transition-colors ${
+                      theme === 'dark' 
+                        ? 'text-gray-400 group-hover:text-white' 
+                        : 'text-gray-500 group-hover:text-gray-700'
+                    }`} />
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="p-6 bg-zinc-900 rounded-xl border border-zinc-800 text-center">
-              <p className="text-gray-400">No PDF chats found</p>
+            <div className={`p-6 rounded-xl border text-center ${
+              theme === 'dark' 
+                ? 'bg-zinc-900 border-zinc-800 text-gray-400' 
+                : 'bg-white border-gray-200 text-gray-600'
+            }`}>
+              <p>No PDF chats found</p>
               <button
                 onClick={navigateToPdfChat}
                 className="mt-2 px-4 py-2 bg-[#00DA83] hover:bg-[#00c978] text-white rounded-lg transition-colors"

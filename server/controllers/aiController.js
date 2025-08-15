@@ -61,7 +61,7 @@ export const generateArticle = async (req, res) => {
             INSERT INTO creations(user_id, prompt, content, type)
             VALUES (${userId}, ${prompt}, ${content}, 'article')
         `;
-
+        console.log('Before update - free_usage:', free_usage);
         // If the user is on the free plan, increment their free_usage by 1
         if (plan !== 'premium') {
             await clerkClient.users.updateUserMetadata(userId, {
@@ -70,11 +70,13 @@ export const generateArticle = async (req, res) => {
                 }
             });
         }
-
+        const updatedUser = await clerkClient.users.getUser(userId);
+        console.log('After update - free_usage:', updatedUser.privateMetadata.free_usage);
         // Send the generated content back to the frontend
         res.json({
             success: true,
-            content
+            content,
+            updatedUsage: updatedUser.privateMetadata.free_usage
         });
 
     } catch (error) {
@@ -136,11 +138,12 @@ export const generateBlobTitle = async (req, res) => {
                 }
             });
         }
-
+        const updatedUser = await clerkClient.users.getUser(userId);
         // Send the generated content back to the frontend
         res.json({
             success: true,
-            content
+            content,
+            updatedUsage: updatedUser.privateMetadata.free_usage
         });
 
     } catch (error) {
@@ -212,10 +215,11 @@ export const humanizeText = async (req, res) => {
                 }
             });
         }
-
+        const updatedUser = await clerkClient.users.getUser(userId);
         res.json({
             success: true,
-            content: humanizedText
+            content: humanizedText,
+            updatedUsage: updatedUser.privateMetadata.free_usage
         });
 
     } catch (error) {
@@ -404,10 +408,11 @@ export const resumeReview = async (req, res) => {
                 }
             });
         }
-
+        const updatedUser = await clerkClient.users.getUser(userId);
         res.json({
             success: true,
-            content
+            content,
+            updatedUsage: updatedUser.privateMetadata.free_usage
         });
 
     } catch (error) {
@@ -523,10 +528,11 @@ export const calculateATSScore = async (req, res) => {
                 console.error("Clerk update error:", clerkError);
             }
         }
-        
+        const updatedUser = await clerkClient.users.getUser(userId);
         res.json({
             success: true,
-            content: result
+            content: result,
+            updatedUsage: updatedUser.privateMetadata.free_usage
         });
 
     } catch (error) {

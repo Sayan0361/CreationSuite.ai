@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { PricingTable } from '@clerk/clerk-react'
+import { useTheme } from '../context/ThemeContext'
 
 const Plan = () => {
+  const { theme } = useTheme()
   const containerRef = useRef(null)
   const titleRef = useRef(null)
   const subtitleRef = useRef(null)
@@ -9,13 +11,11 @@ const Plan = () => {
   const backgroundRef = useRef(null)
 
   useEffect(() => {
-    // Import GSAP from CDN
     const script = document.createElement('script')
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'
     script.onload = () => {
       const { gsap } = window
-      
-      // Create ScrollTrigger for viewport animations
+
       const scrollScript = document.createElement('script')
       scrollScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js'
       scrollScript.onload = () => {
@@ -99,7 +99,9 @@ const Plan = () => {
               
               // Enhanced shadow
               gsap.to(card, {
-                boxShadow: '0 25px 50px -12px rgba(255, 255, 255, 0.05)',
+                boxShadow: theme === 'dark' 
+                  ? '0 25px 50px -12px rgba(255, 255, 255, 0.05)'
+                  : '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
                 duration: 0.4,
                 ease: "power2.out"
               })
@@ -107,7 +109,9 @@ const Plan = () => {
               // Highlight recommended plan
               if (card.classList.contains('cl-pricing-plan--highlight')) {
                 gsap.to(card, {
-                  boxShadow: '0 25px 50px -12px rgba(59, 130, 246, 0.25)',
+                  boxShadow: theme === 'dark'
+                    ? '0 25px 50px -12px rgba(59, 130, 246, 0.25)'
+                    : '0 25px 50px -12px rgba(59, 130, 246, 0.15)',
                   duration: 0.4
                 })
               }
@@ -123,12 +127,16 @@ const Plan = () => {
               
               if (card.classList.contains('cl-pricing-plan--highlight')) {
                 gsap.to(card, {
-                  boxShadow: '0 25px 50px -12px rgba(59, 130, 246, 0.15)',
+                  boxShadow: theme === 'dark'
+                    ? '0 25px 50px -12px rgba(59, 130, 246, 0.15)'
+                    : '0 25px 50px -12px rgba(59, 130, 246, 0.1)',
                   duration: 0.4
                 })
               } else {
                 gsap.to(card, {
-                  boxShadow: '0 10px 15px -3px rgba(255, 255, 255, 0.02)',
+                  boxShadow: theme === 'dark'
+                    ? '0 10px 15px -3px rgba(255, 255, 255, 0.02)'
+                    : '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
                   duration: 0.4
                 })
               }
@@ -172,32 +180,72 @@ const Plan = () => {
         }
       })
     }
-  }, [])
+  }, [theme]) 
 
   return (
-    <div ref={containerRef} className='max-w-8xl mx-auto py-24 px-4 sm:px-8 relative overflow-hidden bg-zinc-950'>
+    <div id="Plan"
+      ref={containerRef} 
+      className={`max-w-8xl mx-auto py-24 px-4 sm:px-8 relative overflow-hidden ${
+        theme === 'dark' ? 'bg-zinc-950' : 'bg-white'
+      }`}
+    >
       {/* Background decorative elements */}
       <div ref={backgroundRef} className='absolute inset-0 pointer-events-none overflow-hidden'>
-        <div className='absolute top-10 left-10 w-32 h-32 rounded-full bg-blue-400/10 blur-3xl animate-pulse'></div>
-        <div className='absolute top-20 right-20 w-40 h-40 rounded-full bg-purple-400/10 blur-3xl animate-pulse delay-1000'></div>
-        <div className='absolute bottom-20 left-1/3 w-28 h-28 rounded-full bg-indigo-400/10 blur-2xl animate-pulse delay-2000'></div>
+        <div className={`absolute top-10 left-10 w-32 h-32 rounded-full blur-3xl animate-pulse ${
+          theme === 'dark' ? 'bg-blue-400/10' : 'bg-blue-200/30'
+        }`}></div>
+        <div className={`absolute top-20 right-20 w-40 h-40 rounded-full blur-3xl animate-pulse delay-1000 ${
+          theme === 'dark' ? 'bg-purple-400/10' : 'bg-purple-200/30'
+        }`}></div>
+        <div className={`absolute bottom-20 left-1/3 w-28 h-28 rounded-full blur-2xl animate-pulse delay-2000 ${
+          theme === 'dark' ? 'bg-indigo-400/10' : 'bg-indigo-200/30'
+        }`}></div>
       </div>
       
       <div className='text-center relative z-10'>
-        <h2 ref={titleRef} className='text-white text-[42px] text-4xl font-bold opacity-0'>
+        <h2 
+          ref={titleRef} 
+          className={`text-[42px] text-4xl font-bold opacity-0 ${
+            theme === 'dark'
+              ? 'text-white bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text'
+              : 'text-zinc-900 bg-gradient-to-r from-zinc-900 via-blue-600 to-zinc-900 bg-clip-text'
+          }`}
+        >
           Choose Your Plan
         </h2>
-        <p ref={subtitleRef} className='text-gray-300 max-w-lg mx-auto opacity-0'>
+        <p 
+          ref={subtitleRef} 
+          className={`max-w-lg mx-auto opacity-0 ${
+            theme === 'dark' ? 'text-gray-300' : 'text-zinc-600'
+          }`}
+        >
           Start for free and scale up as you grow. Find the perfect plan for your content creation needs.
         </p>
       </div>
 
       <div ref={pricingTableRef} className='mt-14 relative z-10'>
-        {/* Custom container for better card arrangement */}
         <div className='flex flex-col items-center justify-center gap-6 lg:flex-row lg:items-stretch lg:justify-center lg:gap-8'>
-          <PricingTable />
+          <PricingTable
+            appearance={{
+              variables: theme === 'dark' ? {
+                colorPrimary: "#3b82f6",
+                colorText: "#ffffff",
+                colorTextSecondary: "#d1d5db",
+                colorBackground: "black",
+                colorBackgroundSecondary: "#0f172a",
+                borderColor: "#1e293b"
+              } : {
+                colorPrimary: "#3b82f6",
+                colorText: "#111827",
+                colorTextSecondary: "#4b5563",
+                colorBackground: "#ffffff",
+                colorBackgroundSecondary: "#f9fafb",
+                borderColor: "#e5e7eb"
+              }
+            }}
+          />
+
         </div>
-        
       </div>
     </div>
   )

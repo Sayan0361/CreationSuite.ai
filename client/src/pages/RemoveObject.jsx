@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
+import { useTheme } from '../context/ThemeContext';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -14,8 +15,8 @@ const RemoveObject = () => {
   const [content, setContent] = useState('')
   const [downloading, setDownloading] = useState(false)
   const fileInputRef = useRef(null)
-
-  const {getToken} = useAuth()
+  const { theme } = useTheme();
+  const { getToken } = useAuth()
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
@@ -94,44 +95,72 @@ const RemoveObject = () => {
   }
 
   return (
-    <div className='h-full overflow-y-auto p-6 flex flex-col md:flex-row gap-6 text-white'>
+    <div className={`h-full overflow-y-auto p-6 flex flex-col md:flex-row gap-6 ${
+      theme === 'dark' ? 'text-white' : 'text-gray-900'
+    }`}>
       {/* Input Section */}
-      <form onSubmit={onSubmitHandler} className='w-full md:w-1/2 p-6 bg-zinc-900 rounded-xl border border-zinc-700 shadow-lg'>
+      <form onSubmit={onSubmitHandler} className={`w-full md:w-1/2 p-6 rounded-xl border shadow-lg ${
+        theme === 'dark' 
+          ? 'bg-zinc-900 border-zinc-700' 
+          : 'bg-white border-gray-200'
+      }`}>
         <div className='flex items-center gap-3 mb-6'>
-          <Sparkles className='w-6 h-6 text-[#4A7AFF]'/>
+          <Sparkles className={`w-6 h-6 ${
+            theme === 'dark' ? 'text-[#4A7AFF]' : 'text-blue-600'
+          }`}/>
           <h1 className='text-xl font-semibold'>Object Removal</h1>
         </div>
         
         <div className='space-y-6'>
           <div>
-            <label className='block text-sm font-medium mb-2'>Upload Image</label>
+            <label className={`block text-sm font-medium mb-2 ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>Upload Image</label>
             
             {preview ? (
-              <div className="relative w-full rounded-lg overflow-hidden border border-zinc-600">
+              <div className={`relative w-full rounded-lg overflow-hidden border ${
+                theme === 'dark' ? 'border-zinc-600' : 'border-gray-300'
+              }`}>
                 <img 
                   src={preview} 
                   alt="Preview" 
-                  className="w-full h-64 object-contain bg-zinc-800"
+                  className={`w-full h-64 object-contain ${
+                    theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-100'
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={clearSelection}
-                  className="absolute top-2 right-2 p-1 bg-zinc-800/80 rounded-full hover:bg-zinc-700 transition-all"
+                  className={`absolute top-2 right-2 p-1 rounded-full hover:bg-opacity-80 transition-all ${
+                    theme === 'dark' 
+                      ? 'bg-zinc-800/80 hover:bg-zinc-700' 
+                      : 'bg-gray-200/80 hover:bg-gray-300'
+                  }`}
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             ) : (
               <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col w-full h-32 border-2 border-zinc-600 border-dashed rounded-lg cursor-pointer bg-zinc-800 hover:bg-zinc-700/50 transition-all">
+                <label className={`flex flex-col w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-all ${
+                  theme === 'dark' 
+                    ? 'border-zinc-600 bg-zinc-800 hover:bg-zinc-700/50' 
+                    : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+                }`}>
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg className="w-8 h-8 mb-4 text-zinc-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                    <svg className={`w-8 h-8 mb-4 ${
+                      theme === 'dark' ? 'text-zinc-500' : 'text-gray-400'
+                    }`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                     </svg>
-                    <p className="mb-2 text-sm text-zinc-400">
+                    <p className={`mb-2 text-sm ${
+                      theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+                    }`}>
                       <span className="font-semibold">Click to upload</span> or drag and drop
                     </p>
-                    <p className="text-xs text-zinc-500">PNG, JPG, JPEG (MAX. 10MB)</p>
+                    <p className={`text-xs ${
+                      theme === 'dark' ? 'text-zinc-500' : 'text-gray-400'
+                    }`}>PNG, JPG, JPEG (MAX. 10MB)</p>
                   </div>
                   <input 
                     ref={fileInputRef}
@@ -147,21 +176,33 @@ const RemoveObject = () => {
           </div>
 
           <div>
-            <label className='block text-sm font-medium mb-2'>Object to Remove</label>
+            <label className={`block text-sm font-medium mb-2 ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>Object to Remove</label>
             <input
               type="text"
               value={object}
               onChange={(e) => setObject(e.target.value)}
-              className="w-full p-3 text-sm rounded-md border border-zinc-600 bg-zinc-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+              className={`w-full p-3 text-sm rounded-md border outline-none focus:ring-1 ${
+                theme === 'dark' 
+                  ? 'border-zinc-600 bg-zinc-800 focus:border-blue-500 focus:ring-blue-500' 
+                  : 'border-gray-300 bg-gray-50 focus:border-blue-500 focus:ring-blue-500'
+              }`}
               placeholder="Enter object name (e.g., watch, spoon)"
               required
             />
-            <p className="mt-1 text-xs text-zinc-400">Enter only one object name to remove</p>
+            <p className={`mt-1 text-xs ${
+              theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+            }`}>Enter only one object name to remove</p>
           </div>
 
           <button 
             disabled={loading || !input || !object} 
-            className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#417DF6] to-[#8E37EB] text-white px-4 py-3 text-sm rounded-lg transition-all hover:shadow-lg hover:shadow-blue-500/20 ${
+            className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#417DF6] to-[#8E37EB] text-white px-4 py-3 text-sm rounded-lg transition-all hover:shadow-lg ${
+              theme === 'dark' 
+                ? 'hover:shadow-blue-500/20' 
+                : 'hover:shadow-blue-400/30'
+            } ${
               loading || !input || !object ? 'opacity-80 cursor-not-allowed' : ''
             }`}
           >
@@ -175,17 +216,27 @@ const RemoveObject = () => {
       </form>
 
       {/* Output Section */}
-      <div className='w-full md:w-1/2 p-6 bg-zinc-900 rounded-xl border border-zinc-700 shadow-lg flex flex-col h-full min-h-[500px] max-h-[calc(100vh-100px)]'>
+      <div className={`w-full md:w-1/2 p-6 rounded-xl border shadow-lg flex flex-col h-full min-h-[500px] max-h-[calc(100vh-100px)] ${
+        theme === 'dark' 
+          ? 'bg-zinc-900 border-zinc-700' 
+          : 'bg-white border-gray-200'
+      }`}>
         <div className='flex items-center justify-between mb-6'>
           <div className='flex items-center gap-3'>
-            <Scissors className='w-6 h-6 text-[#4A7AFF]' />
+            <Scissors className={`w-6 h-6 ${
+              theme === 'dark' ? 'text-[#4A7AFF]' : 'text-blue-600'
+            }`} />
             <h1 className='text-xl font-semibold'>Processed Image</h1>
           </div>
           {content && (
             <button 
               onClick={downloadImage}
               disabled={downloading}
-              className='flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-all'
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all ${
+                theme === 'dark' 
+                  ? 'bg-zinc-800 hover:bg-zinc-700 text-gray-300' 
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              }`}
               title="Download image"
             >
               {downloading ? (
@@ -202,7 +253,9 @@ const RemoveObject = () => {
 
         {!content ? (
           <div className='flex-1 flex flex-col justify-center items-center text-center p-6'>
-            <div className='text-sm flex flex-col items-center gap-4 text-gray-400'>
+            <div className={`text-sm flex flex-col items-center gap-4 ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            }`}>
               <Scissors className='w-10 h-10 opacity-50' />
               <p>{preview ? 'Enter object name and click "Remove Object"' : 'Upload an image to get started'}</p>
             </div>
@@ -212,7 +265,9 @@ const RemoveObject = () => {
             <img 
               src={content} 
               alt="object removed" 
-              className='w-full h-full object-contain max-h-[70vh] rounded-lg'
+              className={`w-full h-full object-contain max-h-[70vh] rounded-lg ${
+                theme === 'dark' ? 'border-zinc-700' : 'border-gray-200'
+              } border`}
             />
           </div>
         )}

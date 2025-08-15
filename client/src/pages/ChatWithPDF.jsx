@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import Markdown from 'react-markdown';
+import { useTheme } from '../context/ThemeContext';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -26,7 +27,7 @@ const ChatWithPDF = () => {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
-
+  const { theme } = useTheme();
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -224,16 +225,24 @@ const ChatWithPDF = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-zinc-950 text-white">
+    <div className={`flex flex-col h-full ${
+      theme === 'dark' ? 'bg-zinc-950 text-white' : 'bg-gray-50 text-gray-900'
+    }`}>
       {/* Mobile header with sidebar toggle */}
-      <div className="md:hidden flex items-center justify-between p-4 border-b border-zinc-800">
+      <div className={`md:hidden flex items-center justify-between p-4 border-b ${
+        theme === 'dark' ? 'border-zinc-800' : 'border-gray-200'
+      }`}>
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-[#00DA83]" />
+          <MessageSquare className={`w-5 h-5 ${
+            theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+          }`} />
           <h1 className="font-semibold">PDF Chat</h1>
         </div>
         <button 
           onClick={() => setShowSidebar(!showSidebar)}
-          className="p-2 rounded-md hover:bg-zinc-800 transition-colors"
+          className={`p-2 rounded-md transition-colors ${
+            theme === 'dark' ? 'hover:bg-zinc-800' : 'hover:bg-gray-200'
+          }`}
           aria-label={showSidebar ? "Close sidebar" : "Open sidebar"}
         >
           {showSidebar ? <X className="w-5 h-5" /> : <History className="w-5 h-5" />}
@@ -242,18 +251,30 @@ const ChatWithPDF = () => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar - PDF upload and history */}
-        <div className={`${showSidebar ? 'block' : 'hidden'} md:block w-full md:w-80 bg-zinc-950 border-r border-zinc-800 flex-shrink-0 overflow-y-auto`}>
+        <div className={`${showSidebar ? 'block' : 'hidden'} md:block w-full md:w-80 flex-shrink-0 overflow-y-auto ${
+          theme === 'dark' ? 'bg-zinc-950 border-r border-zinc-800' : 'bg-white border-r border-gray-200'
+        }`}>
           <div className="p-4">
             <div className="flex items-center gap-3 mb-6">
-              <MessageSquare className="w-5 h-5 text-[#00DA83]" />
+              <MessageSquare className={`w-5 h-5 ${
+                theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+              }`} />
               <h1 className="text-lg font-semibold">Chat with PDF</h1>
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Upload PDF</label>
+              <label className={`block text-sm font-medium mb-2 ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+              }`}>Upload PDF</label>
               <label 
                 className={`flex flex-col items-center justify-center w-full p-4 border-2 border-dashed rounded-lg cursor-pointer transition ${
-                  isDragging ? 'border-[#00DA83] bg-zinc-900' : 'border-zinc-700 hover:bg-zinc-900'
+                  isDragging 
+                    ? theme === 'dark' 
+                      ? 'border-[#00DA83] bg-zinc-900' 
+                      : 'border-green-500 bg-gray-100'
+                    : theme === 'dark'
+                      ? 'border-zinc-700 hover:bg-zinc-900'
+                      : 'border-gray-300 hover:bg-gray-100'
                 }`}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -261,8 +282,12 @@ const ChatWithPDF = () => {
                 onDrop={handleDrop}
               >
                 {pdfFile ? (
-                  <div className="w-full flex items-center gap-3 p-2 bg-zinc-900 rounded">
-                    <File className="w-5 h-5 flex-shrink-0 text-[#00DA83]" />
+                  <div className={`w-full flex items-center gap-3 p-2 rounded ${
+                    theme === 'dark' ? 'bg-zinc-900' : 'bg-gray-100'
+                  }`}>
+                    <File className={`w-5 h-5 flex-shrink-0 ${
+                      theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+                    }`} />
                     <span className="text-sm truncate flex-1">{pdfFile.name}</span>
                     <button 
                       type="button" 
@@ -270,7 +295,9 @@ const ChatWithPDF = () => {
                         e.stopPropagation();
                         removeFile();
                       }}
-                      className="text-zinc-400 hover:text-red-400 transition-colors"
+                      className={`transition-colors ${
+                        theme === 'dark' ? 'text-zinc-400 hover:text-red-400' : 'text-gray-500 hover:text-red-500'
+                      }`}
                       aria-label="Remove file"
                     >
                       <X className="w-4 h-4" />
@@ -278,8 +305,12 @@ const ChatWithPDF = () => {
                   </div>
                 ) : (
                   <>
-                    <Upload className="w-6 h-6 mb-2 text-[#00DA83]" />
-                    <p className="text-sm text-center">
+                    <Upload className={`w-6 h-6 mb-2 ${
+                      theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+                    }`} />
+                    <p className={`text-sm text-center ${
+                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
                       {isDragging ? 'Drop your PDF here' : 'Click or drag PDF to upload'}
                     </p>
                     <input 
@@ -297,19 +328,25 @@ const ChatWithPDF = () => {
                   </>
                 )}
               </label>
-              <p className="text-xs text-zinc-400 mt-2">Supports PDF files up to 5MB</p>
+              <p className={`text-xs mt-2 ${
+                theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+              }`}>Supports PDF files up to 5MB</p>
             </div>
 
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-sm font-medium">
+                <div className={`flex items-center gap-2 text-sm font-medium ${
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                }`}>
                   <History className="w-4 h-4" />
                   <span>Chat History</span>
                 </div>
                 {chatHistory.length > 0 && (
                   <button 
                     onClick={clearLocalHistory}
-                    className="text-xs text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+                    className={`text-xs transition-colors flex items-center gap-1 ${
+                      theme === 'dark' ? 'text-zinc-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'
+                    }`}
                     aria-label="Clear all history"
                   >
                     <Trash2 className="w-3 h-3" />
@@ -320,25 +357,37 @@ const ChatWithPDF = () => {
               <div className="space-y-1 max-h-60 overflow-y-auto">
                 {historyLoading ? (
                   <div className="flex justify-center p-4">
-                    <Loader2 className="w-5 h-5 animate-spin text-[#00DA83]" />
+                    <Loader2 className={`w-5 h-5 animate-spin ${
+                      theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+                    }`} />
                   </div>
                 ) : chatHistory.length > 0 ? (
                   chatHistory.map((item, index) => (
                     <div 
                       key={index} 
-                      className={`p-3 text-sm rounded cursor-pointer hover:bg-zinc-900 transition flex items-center justify-between ${
-                        selectedFile === item.fileName ? 'bg-zinc-800 border border-zinc-700' : ''
+                      className={`p-3 text-sm rounded cursor-pointer transition flex items-center justify-between ${
+                        selectedFile === item.fileName 
+                          ? theme === 'dark'
+                            ? 'bg-zinc-800 border border-zinc-700'
+                            : 'bg-gray-200 border border-gray-300'
+                          : theme === 'dark'
+                            ? 'hover:bg-zinc-900'
+                            : 'hover:bg-gray-100'
                       }`}
                       onClick={() => loadHistory(item.fileName)}
                     >
                       <span className="truncate flex-1">{item.fileName}</span>
                       {selectedFile === item.fileName && (
-                        <div className="w-2 h-2 rounded-full bg-[#00DA83] ml-2 flex-shrink-0" />
+                        <div className={`w-2 h-2 rounded-full ml-2 flex-shrink-0 ${
+                          theme === 'dark' ? 'bg-[#00DA83]' : 'bg-green-600'
+                        }`} />
                       )}
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-zinc-400 p-2">No previous chats found</p>
+                  <p className={`text-xs p-2 ${
+                    theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+                  }`}>No previous chats found</p>
                 )}
               </div>
             </div>
@@ -346,14 +395,20 @@ const ChatWithPDF = () => {
         </div>
 
         {/* Main chat area */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden bg-zinc-950">
+        <div className={`flex-1 flex flex-col h-full overflow-hidden ${
+          theme === 'dark' ? 'bg-zinc-950' : 'bg-gray-50'
+        }`}>
           {/* Conversation display */}
           <div className="flex-1 overflow-y-auto p-4">
             {conversation.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                <FileText className="w-12 h-12 mb-4 text-zinc-500" />
+                <FileText className={`w-12 h-12 mb-4 ${
+                  theme === 'dark' ? 'text-zinc-500' : 'text-gray-400'
+                }`} />
                 <h2 className="text-xl font-semibold mb-2">Chat with your PDF</h2>
-                <p className="text-zinc-400 max-w-md">
+                <p className={`max-w-md ${
+                  theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+                }`}>
                   Upload a PDF file and ask questions about its content to get started.
                 </p>
               </div>
@@ -363,21 +418,37 @@ const ChatWithPDF = () => {
                   <div 
                     key={index} 
                     className={`p-4 rounded-lg transition ${
-                      msg.role === 'user' ? 'bg-zinc-900' : 'bg-zinc-800'
+                      msg.role === 'user' 
+                        ? theme === 'dark' 
+                          ? 'bg-zinc-900' 
+                          : 'bg-gray-200'
+                        : theme === 'dark'
+                          ? 'bg-zinc-800'
+                          : 'bg-gray-100'
                     }`}
                   >
-                    <div className="font-medium mb-2 text-[#00DA83]">
+                    <div className={`font-medium mb-2 ${
+                      theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+                    }`}>
                       {msg.role === 'user' ? 'You' : 'PDF Assistant'}
                     </div>
-                    <div className="reset-tw prose prose-invert max-w-none">
+                    <div className={`reset-tw prose max-w-none ${
+                      theme === 'dark' ? 'prose-invert' : ''
+                    }`}>
                       <Markdown>{msg.content}</Markdown>
                     </div>
                   </div>
                 ))}
                 {loading && (
-                  <div className="p-4 rounded-lg bg-zinc-800">
-                    <div className="font-medium mb-2 text-[#00DA83]">PDF Assistant</div>
-                    <div className="flex items-center gap-2 text-zinc-400">
+                  <div className={`p-4 rounded-lg ${
+                    theme === 'dark' ? 'bg-zinc-800' : 'bg-gray-100'
+                  }`}>
+                    <div className={`font-medium mb-2 ${
+                      theme === 'dark' ? 'text-[#00DA83]' : 'text-green-600'
+                    }`}>PDF Assistant</div>
+                    <div className={`flex items-center gap-2 ${
+                      theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+                    }`}>
                       <Loader2 className="w-4 h-4 animate-spin" />
                       <span>Generating response...</span>
                     </div>
@@ -389,14 +460,20 @@ const ChatWithPDF = () => {
           </div>
 
           {/* Input area */}
-          <div className="p-4 border-t border-zinc-800 bg-zinc-950/50 backdrop-blur-sm">
+          <div className={`p-4 border-t ${
+            theme === 'dark' ? 'border-zinc-800 bg-zinc-950/50' : 'border-gray-200 bg-white/50'
+          } backdrop-blur-sm`}>
             {pdfFile && (
-              <div className="flex items-center gap-2 mb-2 text-xs text-zinc-400">
+              <div className={`flex items-center gap-2 mb-2 text-xs ${
+                theme === 'dark' ? 'text-zinc-400' : 'text-gray-500'
+              }`}>
                 <File className="w-3 h-3" />
                 <span className="truncate">{pdfFile.name}</span>
                 <button 
                   onClick={removeFile}
-                  className="ml-auto text-zinc-500 hover:text-red-400 transition-colors"
+                  className={`ml-auto transition-colors ${
+                    theme === 'dark' ? 'text-zinc-500 hover:text-red-400' : 'text-gray-400 hover:text-red-500'
+                  }`}
                   aria-label="Remove file"
                 >
                   <X className="w-3 h-3" />
@@ -409,7 +486,11 @@ const ChatWithPDF = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full p-3 pr-12 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#00DA83] resize-none transition"
+                className={`w-full p-3 pr-12 rounded-lg focus:outline-none resize-none transition ${
+                  theme === 'dark'
+                    ? 'bg-zinc-900 border border-zinc-800 focus:ring-1 focus:ring-[#00DA83]'
+                    : 'bg-white border border-gray-300 focus:ring-1 focus:ring-green-500'
+                }`}
                 placeholder={pdfFile ? "Ask questions about the PDF..." : "Upload a PDF to start chatting"}
                 rows={1}
                 disabled={loading || !pdfFile}
@@ -419,8 +500,12 @@ const ChatWithPDF = () => {
                 disabled={loading || !pdfFile || !message.trim()}
                 className={`absolute right-2 bottom-2 p-2 rounded-lg transition ${
                   loading || !pdfFile || !message.trim()
-                    ? 'text-zinc-600'
-                    : 'text-[#00DA83] hover:bg-zinc-800'
+                    ? theme === 'dark' 
+                      ? 'text-zinc-600' 
+                      : 'text-gray-400'
+                    : theme === 'dark'
+                      ? 'text-[#00DA83] hover:bg-zinc-800'
+                      : 'text-green-600 hover:bg-gray-200'
                 }`}
                 aria-label="Send message"
               >

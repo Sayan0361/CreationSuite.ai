@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import Markdown from 'react-markdown';
+import { useTheme } from '../context/ThemeContext';
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -18,8 +19,8 @@ const WriteArticle = () => {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [content, setContent] = useState('')
-
-  const {getToken} = useAuth()
+  const { theme } = useTheme();
+  const { getToken } = useAuth()
 
   const onSubmitHandler = async (e)=>{
     e.preventDefault();
@@ -55,38 +56,58 @@ const WriteArticle = () => {
   };
 
   return (
-    <div className='h-full overflow-y-auto p-6 flex flex-col md:flex-row gap-6 text-white'>
+    <div className={`h-full overflow-y-auto p-6 flex flex-col md:flex-row gap-6 ${
+      theme === 'dark' ? 'text-white' : 'text-gray-900'
+    }`}>
       {/* Input Section */}
-      <form onSubmit={onSubmitHandler} className='w-full md:w-1/2 p-6 bg-zinc-900 rounded-xl border border-zinc-700 shadow-lg'>
+      <form onSubmit={onSubmitHandler} className={`w-full md:w-1/2 p-6 rounded-xl border shadow-lg ${
+        theme === 'dark' 
+          ? 'bg-zinc-900 border-zinc-700' 
+          : 'bg-white border-gray-200'
+      }`}>
         <div className='flex items-center gap-3 mb-6'>
-          <Sparkles className='w-6 h-6 text-[#4A7AFF]'/>
+          <Sparkles className={`w-6 h-6 ${
+            theme === 'dark' ? 'text-[#4A7AFF]' : 'text-blue-600'
+          }`}/>
           <h1 className='text-xl font-semibold'>Article Configuration</h1>
         </div>
         
         <div className='space-y-6'>
           <div>
-            <label className='block text-sm font-medium mb-2'>Article Topic</label>
+            <label className={`block text-sm font-medium mb-2 ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>Article Topic</label>
             <input 
               onChange={(e)=>setInput(e.target.value)} 
               value={input} 
               type="text" 
-              className='w-full p-3 bg-zinc-800 border border-zinc-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all' 
+              className={`w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+                theme === 'dark' 
+                  ? 'bg-zinc-800 border-zinc-600 text-white' 
+                  : 'bg-gray-50 border-gray-300 text-gray-900'
+              }`} 
               placeholder='Write an article on....' 
               required
             />
           </div>
 
           <div>
-            <label className='block text-sm font-medium mb-2'>Article Length</label>
+            <label className={`block text-sm font-medium mb-2 ${
+              theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+            }`}>Article Length</label>
             <div className='flex flex-wrap gap-2'>
               {articleLength.map((item, index)=>(
                 <button
                   type="button"
                   onClick={()=> setSelectedLength(item)} 
-                  className={`px-4 py-2 text-sm rounded-full transition-all ${
+                  className={`px-4 py-2 text-sm rounded-full transition-all border ${
                     selectedLength.text === item.text 
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50' 
-                      : 'bg-zinc-800 text-gray-300 border border-zinc-700 hover:border-zinc-500'
+                      ? theme === 'dark'
+                        ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' 
+                        : 'bg-blue-100 text-blue-700 border-blue-300'
+                      : theme === 'dark'
+                        ? 'bg-zinc-800 text-gray-300 border-zinc-700 hover:border-zinc-500'
+                        : 'bg-gray-100 text-gray-700 border-gray-300 hover:border-gray-400'
                   }`} 
                   key={index}
                 >
@@ -98,7 +119,11 @@ const WriteArticle = () => {
 
           <button 
             disabled={loading} 
-            className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-3 text-sm rounded-lg transition-all hover:shadow-lg hover:shadow-blue-500/20 ${
+            className={`w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-3 text-sm rounded-lg transition-all hover:shadow-lg ${
+              theme === 'dark' 
+                ? 'hover:shadow-blue-500/20' 
+                : 'hover:shadow-blue-400/30'
+            } ${
               loading ? 'opacity-80 cursor-not-allowed' : ''
             }`}
           >
@@ -112,16 +137,26 @@ const WriteArticle = () => {
       </form>
 
       {/* Output Section */}
-      <div className='w-full md:w-1/2 p-6 bg-zinc-900 rounded-xl border border-zinc-700 shadow-lg flex flex-col h-full min-h-[500px] max-h-[calc(100vh-100px)]'>
+      <div className={`w-full md:w-1/2 p-6 rounded-xl border shadow-lg flex flex-col h-full min-h-[500px] max-h-[calc(100vh-100px)] ${
+        theme === 'dark' 
+          ? 'bg-zinc-900 border-zinc-700' 
+          : 'bg-white border-gray-200'
+      }`}>
         <div className='flex items-center justify-between mb-6'>
           <div className='flex items-center gap-3'>
-            <Edit className='w-6 h-6 text-[#4A7AFF]' />
+            <Edit className={`w-6 h-6 ${
+              theme === 'dark' ? 'text-[#4A7AFF]' : 'text-blue-600'
+            }`} />
             <h1 className='text-xl font-semibold'>Generated Article</h1>
           </div>
           {content && (
             <button 
               onClick={copyToClipboard}
-              className='flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-all'
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all ${
+                theme === 'dark' 
+                  ? 'bg-zinc-800 hover:bg-zinc-700 text-gray-300' 
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              }`}
               title="Copy article"
             >
               <Copy className='w-4 h-4' />
@@ -132,14 +167,18 @@ const WriteArticle = () => {
 
         {!content ? (
           <div className='flex-1 flex flex-col justify-center items-center text-center p-6'>
-            <div className='text-sm flex flex-col items-center gap-4 text-gray-400'>
+            <div className={`text-sm flex flex-col items-center gap-4 ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            }`}>
               <Edit className='w-10 h-10 opacity-50' />
               <p>Enter a topic and click "Generate article" to get started</p>
             </div>
           </div>
         ) : (
           <div className='flex-1 overflow-y-auto pr-2'>
-            <div className='reset-tw prose prose-invert max-w-none'>
+            <div className={`reset-tw prose max-w-none ${
+              theme === 'dark' ? 'prose-invert' : ''
+            }`}>
               <Markdown>{content}</Markdown>
             </div>
           </div>
