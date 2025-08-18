@@ -380,6 +380,7 @@ const Hero = () => {
           </button>
           
           <button 
+            onClick={() => window.open("https://drive.google.com/file/d/1hphjL7zBqkoFilnuQlATg4t_-yXupDv8/view", "_blank")}
             className={`px-8 py-3 rounded-lg border cursor-pointer shadow-sm font-medium transition-shadow duration-300 ${
               theme === 'dark' 
                 ? 'bg-zinc-800 text-white border-zinc-700 hover:bg-zinc-700 hover:shadow-zinc-700/30' 

@@ -24,7 +24,7 @@ const Home = () => {
           <FAQ id="FAQ"/>
         </div>
         
-        {/* Add ProgressiveBlur at the bottom */}
+        {/* Add ProgressiveBlur*/}
         <ProgressiveBlur 
           height="100px" 
           position="bottom" 
