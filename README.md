@@ -1,8 +1,10 @@
 # CreationSuite.ai - AI-Powered SaaS Platform
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-CreationSuite.ai-brightgreen?style=for-the-badge&logo=vercel)](https://creation-suite-ai.vercel.app/)
-
 CreationSuite.ai is a SaaS platform offering AI-powered content creation tools with a freemium model. Experience powerful AI tools for content generation, resume optimization, and creative design.
+
+- **Vercel Deployment:** https://creation-suite-ai.vercel.app/
+- **AWS EC2 Deployment:** http://ec2-3-109-209-215.ap-south-1.compute.amazonaws.com/
+
 
 ## 🚀 Feature Tiers
 
@@ -41,9 +43,10 @@ CreationSuite.ai is a SaaS platform offering AI-powered content creation tools w
 - **Clipdrop API** - Handles image generation/editing
 
 ### Infrastructure
-- **Vercel** - Frontend hosting
+- **AWS EC2 (Ubuntu + Nginx + PM2)** - Production deployment
+- **Vercel** - Frontend deployment
 - **Neon** - Serverless PostgreSQL
-- **Cloudinary** - Image CDN
+- **Cloudinary** - Image CDN & Storage
 
 ---
 
