@@ -3,7 +3,9 @@
 CreationSuite.ai is a SaaS platform offering AI-powered content creation tools with a freemium model. Experience powerful AI tools for content generation, resume optimization, and creative design.
 
 - **Vercel Deployment:** https://creation-suite-ai.vercel.app/
-- **AWS EC2 Deployment:** http://ec2-3-109-209-215.ap-south-1.compute.amazonaws.com/
+- **AWS EC2 Deployment:** http://ec2-13-205-97-8.ap-south-1.compute.amazonaws.com
+
+  Note: The EC2 instance maybe stopped for now
 
 
 ## 🚀 Feature Tiers
